@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1234Farma - Selecionar Unidade</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root { 
+            --tech-purple: #2E1A47;
+            --neon-mint: #00D284;
+            --page-bg: #FFFFFF;       
+            --soft-gray: #F8F9FA;
+            --text-main: #2E1A47;
+            --text-sub: #888888;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        
+        body { 
+            background-color: var(--page-bg); 
+            color: var(--text-main); 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Topo Minimalista */
+        header {
+            padding: 50px 25px 20px 25px;
+            background-color: var(--page-bg);
+        }
+
+        .brand-logo { font-size: 1.5rem; font-weight: 900; margin-bottom: 5px; }
+        .brand-1234 { color: var(--neon-mint); }
+        
+        header h2 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; margin-top: 10px; }
+        header p { font-size: 0.9rem; color: var(--text-sub); margin-top: 5px; font-weight: 500; }
+
+        /* Container de Conteúdo */
+        .content-selection {
+            flex: 1;
+            padding: 10px 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Botão Localização Minimalista */
+        .btn-gps-minimal {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--neon-mint);
+            background: none;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 10px 0;
+            cursor: pointer;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+        .btn-gps-minimal .material-icons { font-size: 1.1rem; }
+
+        /* Busca Refinada */
+        .search-wrapper {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        .search-wrapper input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border-radius: 12px;
+            border: none;
+            background: var(--soft-gray);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            font-weight: 500;
+        }
+        .search-wrapper .material-icons {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #BBB;
+        }
+
+        /* Lista de Unidades Estilo App */
+        .machine-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 30px;
+            scrollbar-width: none;
+        }
+        .machine-list::-webkit-scrollbar { display: none; }
+
+        .machine-card {
+            background: var(--page-bg);
+            border-radius: 16px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid #F0F0F0;
+            transition: 0.2s ease;
+        }
+        .machine-card:active { transform: scale(0.98); background: var(--soft-gray); }
+
+        .icon-box {
+            width: 44px;
+            height: 44px;
+            background: var(--soft-gray);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--tech-purple);
+        }
+
+        .machine-info { flex: 1; }
+        .machine-info h3 { font-size: 0.95rem; font-weight: 800; color: var(--tech-purple); margin-bottom: 2px; }
+        .machine-info p { font-size: 0.75rem; color: var(--text-sub); font-weight: 500; line-height: 1.3; }
+        
+        .distance-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--neon-mint);
+            background: rgba(0, 210, 132, 0.1);
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .chevron { color: #DDD; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand-logo"><span class="brand-1234">1234</span><span style="color: var(--tech-purple)">Farma</span></div>
+        <h2>Escolha onde retirar</h2>
+        <p>Selecione uma unidade para ver o estoque.</p>
+    </header>
+
+    <div class="content-selection">
+        
+        <button class="btn-gps-minimal" onclick="alert('Localizando...')">
+            <span class="material-icons">near_me</span>
+            Usar minha localização atual
+        </button>
+
+        <div class="search-wrapper">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Bairro, rua ou unidade">
+        </div>
+
+        <div class="machine-list" id="machineList">
+            <div class="machine-card" onclick="selectMachine(22, 'Av. Paulista, 45 - Bela Vista')">
+                <div class="icon-box"><span class="material-icons">location_on</span></div>
+                <div class="machine-info">
+                    <h3>Unidade Paulista</h3>
+                    <p>Avenida Paulista, 45 - SP</p>
+                </div>
+                <div class="distance-label">500m</div>
+                <span class="material-icons chevron">chevron_right</span>
+            </div>
+
+            <div class="machine-card" onclick="selectMachine(15, 'Rua Augusta, 1200 - Consolação')">
+                <div class="icon-box"><span class="material-icons">location_on</span></div>
+                <div class="machine-info">
+                    <h3>Unidade Augusta</h3>
+                    <p>Rua Augusta, 1200 - SP</p>
+                </div>
+                <div class="distance-label">1.2km</div>
+                <span class="material-icons chevron">chevron_right</span>
+            </div>
+
+            <div class="machine-card" onclick="selectMachine(08, 'Shopping Eldorado - Pinheiros')">
+                <div class="icon-box"><span class="material-icons">location_on</span></div>
+                <div class="machine-info">
+                    <h3>Unidade Eldorado</h3>
+                    <p>Shopping Eldorado - 1º Piso</p>
+                </div>
+                <div class="distance-label">3.5km</div>
+                <span class="material-icons chevron">chevron_right</span>
+            </div>
+
+            <div class="machine-card" onclick="selectMachine(31, 'Estação da Luz - Centro')">
+                <div class="icon-box"><span class="material-icons">location_on</span></div>
+                <div class="machine-info">
+                    <h3>Unidade Luz</h3>
+                    <p>Estação da Luz - Plataforma 1</p>
+                </div>
+                <div class="distance-label">4.8km</div>
+                <span class="material-icons chevron">chevron_right</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectMachine(id, address) {
+            const machineData = {
+                id: id,
+                address: address
+            };
+            // Salva a unidade escolhida
+            localStorage.setItem('selected_machine', JSON.stringify(machineData));
+            
+            // Segue para a loja
+            window.location.href = 'loja_mobile.html';
+        }
+    </script>
+</body>
+</html>

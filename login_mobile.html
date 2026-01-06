@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* OCULTAR BARRA DE ROLAGEM */
+        * {
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }
+        *::-webkit-scrollbar {
+            display: none;
+        }
+
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            color: #2E1A47;
+            background-color: #FFFFFF;
+        }
+
+        .login-wrapper { text-align: center; }
+
+        .brand-logo-modal { 
+            font-size: 2rem; 
+            font-weight: 900; 
+            letter-spacing: -1px; 
+            margin-bottom: 25px; 
+            margin-top: 20px;
+        }
+        .brand-logo-modal .mint { color: #00D284; }
+        .brand-logo-modal .purple { color: #2E1A47; }
+
+        .welcome-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .welcome-subtitle {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        /* BOTÃO PRINCIPAL 1234FARMA */
+        .btn-login-main {
+            width: 100%;
+            padding: 16px;
+            background: #2E1A47;
+            color: #00D284;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(46, 26, 71, 0.2);
+        }
+
+        .divider-social {
+            display: flex;
+            align-items: center;
+            color: #bbb;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .divider-social::before, .divider-social::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #EEE;
+        }
+        .divider-social span { padding: 0 15px; }
+
+        .social-access-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .btn-social-option {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #E0E0E0;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-weight: 700;
+            color: #2E1A47;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .login-footer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* ESTILO ROXO COM SUBLINHADO VERDE */
+        .btn-register-link {
+            color: #2E1A47;
+            font-weight: 800;
+            text-decoration: none;
+            border-bottom: 2px solid #00D284;
+            cursor: pointer;
+            padding-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="brand-logo-modal">
+            <span class="mint">1234</span><span class="purple">Farma</span>
+        </div>
+
+        <h2 class="welcome-title">Boas-vindas!</h2>
+        <p class="welcome-subtitle">Acesse sua conta e aproveite nossas ofertas</p>
+
+        <button class="btn-login-main" onclick="window.location.href='login_cpf_senha_mobile.html'">
+            Entrar com o CPF e Senha
+        </button>
+
+        <div class="divider-social">
+            <span>ou acesse com</span>
+        </div>
+
+        <div class="social-access-list">
+            <button class="btn-social-option">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="18">
+                Entrar com Google
+            </button>
+            <button class="btn-social-option">
+                <span class="material-icons">apple</span>
+                Entrar com Apple
+            </button>
+        </div>
+
+        <div class="login-footer">
+            Ainda não tem conta? <span class="btn-register-link" onclick="window.location.href='cadastro_mobile.html'">Cadastre-se</span>
+        </div>
+    </div>
+</body>
+</html>

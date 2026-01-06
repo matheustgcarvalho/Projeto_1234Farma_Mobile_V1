@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1234Farma - Ofertas Relâmpago</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root { 
+            --tech-purple: #2E1A47;
+            --neon-mint: #00D284;
+            --warning-orange: #FF9F43;
+            --danger-red: #FF4757;
+            --page-bg: #FFFFFF;       
+            --element-bg: #E9ECEF;
+            --card-shadow: 0 4px 10px rgba(0,0,0,0.04);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; user-select: none; }
+        *::-webkit-scrollbar { display: none; }
+        
+        body { background-color: var(--page-bg); color: var(--tech-purple); padding-bottom: 90px; overflow-x: hidden; }
+
+        /* === HEADER === */
+        header { padding: 40px 15px 15px 15px; display: flex; justify-content: center; align-items: center; position: relative; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .brand-logo { font-size: 1.3rem; font-weight: 900; letter-spacing: -1px; }
+        .brand-1234 { color: var(--neon-mint); }
+        .header-icon-right { position: absolute; right: 15px; top: 45px; color: var(--tech-purple); cursor: pointer; }
+        .cart-badge { position: absolute; top: -5px; right: -8px; background-color: var(--danger-red); color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 10px; border: 2px solid white; }
+
+        .timer-strip { background-color: var(--tech-purple); color: white; padding: 10px; text-align: center; font-size: 0.8rem; font-weight: 700; }
+        .timer-digits { color: var(--neon-mint); font-family: monospace; font-size: 1.1rem; margin-left: 8px; }
+
+        .search-bar-wrapper { padding: 15px; }
+        .search-input { width: 100%; padding: 8px 35px; border-radius: 20px; background-color: var(--element-bg); font-size: 0.9rem; height: 38px; display: flex; align-items: center; position: relative; }
+        .search-icon-span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 1.1rem; opacity: 0.5; }
+        .search-input input { background: none; border: none; width: 100%; outline: none; color: var(--tech-purple); }
+
+        main { padding: 0 15px 15px; }
+
+        /* === MEGA PROMOÇÃO === */
+        .carousel-container { position: relative; margin-bottom: 30px; width: 100%; }
+        .super-carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; padding: 20px 0; scroll-behavior: smooth; }
+        .super-slide { 
+            min-width: 88%; background: #fff; border-radius: 35px; box-shadow: 0 15px 35px rgba(46, 26, 71, 0.1);
+            scroll-snap-align: center; position: relative; flex-shrink: 0; border: 1px solid #f0f0f0;
+            padding: 20px; height: 380px; display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .badge-discount { position: absolute; top: -12px; left: 15px; background: var(--danger-red); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; font-size: 0.65rem; z-index: 10; box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3); border: 2px solid white; }
+        .badge-discount span { font-size: 0.95rem; }
+        .super-img-area { width: 100%; height: 160px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .super-img-area::before { content: ""; position: absolute; width: 150px; height: 150px; background: radial-gradient(circle, rgba(0, 210, 132, 0.15) 0%, transparent 70%); border-radius: 50%; }
+        .super-img { max-height: 100%; z-index: 2; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); }
+        .super-info { text-align: left; position: relative; width: 100%; padding-bottom: 50px; }
+        .product-name { font-size: 1.1rem; font-weight: 800; margin-bottom: 5px; color: var(--tech-purple); }
+        .call-to-action { font-size: 1rem; color: var(--neon-mint); font-weight: 900; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        .extra-info-row { display: flex; gap: 10px; margin-bottom: 8px; }
+        .stock-pill { background: #FFF3E0; color: #E65100; font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 5px; border: 1px solid #FFE0B2; }
+        .shipping-pill { background: #E8F5E9; color: #2E7D32; font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 5px; border: 1px solid #C8E6C9; }
+        .super-price-container { display: flex; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+        .old-price { text-decoration: line-through; color: #BBB; font-size: 0.95rem; }
+        .new-price-big { font-size: 2.2rem; font-weight: 900; color: var(--tech-purple); }
+        .btn-container-mega { position: absolute; bottom: -5px; right: 0; width: 50px; height: 50px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 20; }
+        .btn-buy-now { width: 100%; height: 100%; background: var(--tech-purple); color: var(--neon-mint); border: none; border-radius: 25px; cursor: pointer; display: flex; align-items: center; justify-content: center; overflow: hidden; white-space: nowrap; transition: 0.4s; box-shadow: 0 5px 15px rgba(46, 26, 71, 0.2); }
+        .btn-buy-now span.txt { display: none; font-weight: 900; font-size: 0.85rem; margin-left: 8px; text-transform: uppercase; }
+        .btn-container-mega.active { width: 100%; left: 0; }
+        .btn-container-mega.active .btn-buy-now { background: var(--neon-mint); color: var(--tech-purple); }
+        .btn-container-mega.active .btn-buy-now span.txt { display: inline-block; }
+        .nav-btn { position: absolute; top: 40%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.9); color: var(--tech-purple); border: none; width: 38px; height: 38px; border-radius: 50%; z-index: 100; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .next-btn { right: 0; } .prev-btn { left: 0; }
+        .hand-helper { position: absolute; right: 15px; top: 40%; z-index: 110; pointer-events: none; transform: translateY(-50%); }
+        .hand-helper .material-icons { font-size: 45px; color: var(--neon-mint); animation: syncClick 6s infinite; }
+        @keyframes syncClick { 0%, 92% { opacity: 0; transform: scale(1) translateY(10px); } 95% { opacity: 1; transform: scale(1.2) translateY(0); } 97% { transform: scale(0.9); } 100% { opacity: 0; transform: scale(1); } }
+        .dots-container { display: flex; justify-content: center; gap: 8px; margin-top: 5px; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: #DDD; }
+        .dot.active { background: var(--tech-purple); width: 20px; border-radius: 4px; }
+
+        /* === LOGIN CARD SEM DEGRADÊ === */
+        .login-split-card { background: var(--tech-purple); border-radius: 25px; padding: 25px; margin: 10px 0 30px; color: white; text-align: center; border: 2px dashed rgba(255,255,255,0.3); }
+        .split-buttons { display: flex; gap: 10px; margin-top: 15px; }
+        .split-buttons button { flex: 1; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 0.75rem; border: none; cursor: pointer; text-transform: uppercase; }
+        .btn-login-main { background: var(--neon-mint); color: var(--tech-purple); }
+        .btn-register-sub { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); }
+
+        /* === GRID PRODUTOS === */
+        .section-title { font-size: 0.95rem; margin-bottom: 15px; font-weight: 800; border-left: 3px solid var(--neon-mint); padding-left: 8px; color: var(--tech-purple); }
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 30px; }
+        .product-card { background-color: white; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: var(--card-shadow); padding-bottom: 10px; border: 1px solid #e0e0e0; }
+        .promo-ribbon { position: absolute; top: 0; right: 0; width: 70px; height: 70px; overflow: hidden; z-index: 5; pointer-events: none; }
+        .promo-ribbon span { position: absolute; display: block; width: 100px; padding: 4px 0; background-color: var(--danger-red); color: #fff; font-size: 8px; font-weight: 900; text-align: center; text-transform: uppercase; transform: rotate(45deg) translate(22px, -12px); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .product-img-container { width: 100%; height: 110px; background: white; display: flex; justify-content: center; align-items: center; }
+        .product-img { width: 80%; height: 80%; object-fit: contain; mix-blend-mode: multiply; }
+        .product-info-wrapper { padding: 8px 10px 0 10px; }
+        .product-title { font-size: 0.85rem; font-weight: 700; color: var(--tech-purple); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cupom-badge { display: flex; align-items: center; gap: 4px; background: #e8f5e9; color: #2e7d32; font-size: 0.6rem; font-weight: 800; padding: 3px 6px; border-radius: 4px; border: 1px dashed #2e7d32; margin-top: 5px; width: fit-content; }
+        .price-container { display: flex; flex-direction: column; margin-top: 5px; }
+        .grid-old-price { font-size: 0.65rem; color: #999; text-decoration: line-through; }
+        .product-price { font-size: 0.95rem; font-weight: 800; color: var(--tech-purple); }
+        .btn-add-grid { width: 28px; height: 28px; border-radius: 50%; border: none; background: var(--neon-mint); color: white; position: absolute; bottom: 8px; right: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .btn-add-grid.added { background: var(--tech-purple); transform: scale(1.1); }
+
+        /* === KITS === */
+        .kits-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 20px; cursor: grab; scrollbar-width: none; }
+        .kit-card { min-width: 300px; background: white; border-radius: 20px; padding: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); border: 1px solid #EEE; display: flex; flex-direction: column; flex-shrink: 0; }
+        .kit-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .kit-tag { background: #E3F2FD; color: #1976D2; font-size: 0.6rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; }
+        .kit-content { display: flex; gap: 15px; align-items: center; }
+        .kit-imgs { display: flex; position: relative; width: 70px; height: 50px; flex-shrink: 0; }
+        .kit-imgs img { width: 45px; height: 45px; object-fit: contain; position: absolute; background: white; border-radius: 50%; border: 1px solid #EEE; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+        .kit-details { flex-grow: 1; }
+        .kit-name { font-size: 0.85rem; font-weight: 800; color: var(--tech-purple); margin-bottom: 4px; }
+        .kit-items-list { font-size: 0.65rem; color: #777; line-height: 1.2; margin-bottom: 8px; }
+        .kit-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 10px; border-top: 1px dashed #EEE; }
+        .kit-price { color: var(--neon-mint); font-weight: 900; font-size: 1.15rem; }
+        .btn-add-kit { background: var(--tech-purple); color: var(--neon-mint); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .btn-add-kit.added { background: var(--neon-mint); color: var(--tech-purple); }
+
+        .disclaimer { text-align: center; font-size: 0.65rem; color: #999; margin: 20px 0; line-height: 1.4; padding: 0 10px; }
+
+        /* FOOTER */
+        .mobile-footer { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--tech-purple); height: 60px; display: flex; justify-content: space-around; align-items: center; z-index: 2000; border-top: 2px solid var(--neon-mint); }
+        .nav-item { color: white; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.55rem; font-weight: 600; opacity: 0.6; }
+        .nav-item.active { color: var(--neon-mint); opacity: 1; }
+        .nav-item .material-icons { font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand-logo"><span class="brand-1234">1234</span><span class="brand-farma">Farma</span></div>
+        <div class="header-icon-right" onclick="window.location.href='carrinho_mobile.html'">
+            <span class="material-icons">shopping_cart</span>
+            <span id="cartBadge" class="cart-badge">0</span>
+        </div>
+    </header>
+
+    <div class="timer-strip" id="timerStrip">OFERTAS RELÂMPAGO ACABAM EM: <span class="timer-digits" id="timer">00:00:00</span></div>
+
+    <div class="search-bar-wrapper">
+        <div class="search-input">
+            <span class="material-icons search-icon-span">search</span>
+            <input type="text" id="mainSearch" placeholder="O que você procura em oferta?" onkeyup="searchOffers()">
+        </div>
+    </div>
+
+    <main id="mainContent">
+        <section id="promoSection">
+            <div class="carousel-container">
+                <div class="hand-helper"><span class="material-icons">touch_app</span></div>
+                <button class="nav-btn prev-btn" onclick="manualChangeSlide(-1)"><span class="material-icons">chevron_left</span></button>
+                <button class="nav-btn next-btn" onclick="manualChangeSlide(1)"><span class="material-icons">chevron_right</span></button>
+                <div class="super-carousel" id="megaCarousel">
+                    <div class="super-slide">
+                        <div class="badge-discount"><span>-50%</span>OFF</div>
+                        <div class="super-img-area"><img src="img/centrum.png" class="super-img"></div>
+                        <div class="super-info">
+                            <span class="call-to-action">Aproveite agora!</span>
+                            <p class="product-name">Centrum Multi A-Z</p>
+                            <div class="extra-info-row"><span class="stock-pill">RESTAM 4 UNID.</span><span class="shipping-pill">RETIRADA RÁPIDA</span></div>
+                            <div class="super-price-container"><span class="old-price">R$ 110,00</span><span class="new-price-big">R$ 55,00</span></div>
+                            <div class="btn-container-mega"><button class="btn-buy-now" onclick="megaAdd(16, 'Centrum A-Z', 55, 'img/centrum.png', this)"><span class="material-icons">add_shopping_cart</span><span class="txt">Ir para o carrinho</span></button></div>
+                        </div>
+                    </div>
+                    <div class="super-slide">
+                        <div class="badge-discount"><span>-60%</span>OFF</div>
+                        <div class="super-img-area"><img src="img/allegra.png" class="super-img"></div>
+                        <div class="super-info">
+                            <span class="call-to-action">Aproveite agora!</span>
+                            <p class="product-name">Allegra 120mg</p>
+                            <div class="extra-info-row"><span class="stock-pill">ÚLTIMAS UNID.</span><span class="shipping-pill">RETIRADA RÁPIDA</span></div>
+                            <div class="super-price-container"><span class="old-price">R$ 45,00</span><span class="new-price-big">R$ 18,00</span></div>
+                            <div class="btn-container-mega"><button class="btn-buy-now" onclick="megaAdd(10, 'Allegra', 18, 'img/allegra.png', this)"><span class="material-icons">add_shopping_cart</span><span class="txt">Ir para o carrinho</span></button></div>
+                        </div>
+                    </div>
+                    <div class="super-slide">
+                        <div class="badge-discount"><span>-55%</span>OFF</div>
+                        <div class="super-img-area"><img src="img/torsilax.png" class="super-img"></div>
+                        <div class="super-info">
+                            <span class="call-to-action">Aproveite agora!</span>
+                            <p class="product-name">Torsilax 30 Comp.</p>
+                            <div class="extra-info-row"><span class="stock-pill">OFERTA DO DIA</span><span class="shipping-pill">RETIRADA RÁPIDA</span></div>
+                            <div class="super-price-container"><span class="old-price">R$ 22,00</span><span class="new-price-big">R$ 9,90</span></div>
+                            <div class="btn-container-mega"><button class="btn-buy-now" onclick="megaAdd(3, 'Torsilax', 9.9, 'img/torsilax.png', this)"><span class="material-icons">add_shopping_cart</span><span class="txt">Ir para o carrinho</span></button></div>
+                        </div>
+                    </div>
+                    <div class="super-slide">
+                        <div class="badge-discount"><span>-50%</span>OFF</div>
+                        <div class="super-img-area"><img src="img/neosaldina.png" class="super-img"></div>
+                        <div class="super-info">
+                            <span class="call-to-action">Aproveite agora!</span>
+                            <p class="product-name">Neosaldina 30 Drg.</p>
+                            <div class="extra-info-row"><span class="stock-pill">ESTOQUE ALTO</span><span class="shipping-pill">RETIRADA RÁPIDA</span></div>
+                            <div class="super-price-container"><span class="old-price">R$ 32,00</span><span class="new-price-big">R$ 16,00</span></div>
+                            <div class="btn-container-mega"><button class="btn-buy-now" onclick="megaAdd(2, 'Neosaldina', 16, 'img/neosaldina.png', this)"><span class="material-icons">add_shopping_cart</span><span class="txt">Ir para o carrinho</span></button></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dots-container" id="dotsContainer"></div>
+            </div>
+        </section>
+
+        <section id="loginSection">
+            <div class="login-split-card">
+                <h4>Ative ofertas personalizadas</h4>
+                <p>Preços exclusivos para clientes logados.</p>
+                <div class="split-buttons">
+                    <button class="btn-split btn-login-main" onclick="window.location.href='login_cpf_senha_mobile.html'">Entrar</button>
+                    <button class="btn-split btn-register-sub" onclick="window.location.href='cadastro_mobile.html'">Cadastre-se</button>
+                </div>
+            </div>
+        </section>
+
+        <h3 class="section-title">Mais Ofertas</h3>
+        <div class="product-grid" id="offersGrid">
+            <div class="product-card" data-name="dorflex"><div class="promo-ribbon"><span>PROMOÇÃO</span></div><div class="product-img-container"><img src="img/dorflex.png" class="product-img"></div><div class="product-info-wrapper"><h3 class="product-title">Dorflex 10 Comp.</h3><div class="price-container"><span class="grid-old-price">R$ 15,90</span><span class="product-price">R$ 11,13</span></div></div><button class="btn-add-grid" onclick="adicionarAoCarrinho(1, 'Dorflex', 11.13, 'img/dorflex.png', this)"><span class="material-icons">add</span></button></div>
+            <div class="product-card" data-name="vick"><div class="promo-ribbon"><span>PROMOÇÃO</span></div><div class="product-img-container"><img src="img/vick.png" class="product-img"></div><div class="product-info-wrapper"><h3 class="product-title">Vick Vaporub 12g</h3><div class="price-container"><span class="grid-old-price">R$ 28,00</span><span class="product-price">R$ 22,40</span></div></div><button class="btn-add-grid" onclick="adicionarAoCarrinho(8, 'Vick', 22.40, 'img/vick.png', this)"><span class="material-icons">add</span></button></div>
+            <div class="product-card" data-name="advil"><div class="promo-ribbon"><span>PROMOÇÃO</span></div><div class="product-img-container"><img src="img/advil.png" class="product-img"></div><div class="product-info-wrapper"><h3 class="product-title">Advil 400mg 8 Caps.</h3><div class="price-container"><span class="grid-old-price">R$ 25,00</span><span class="product-price">R$ 21,25</span></div></div><button class="btn-add-grid" onclick="adicionarAoCarrinho(4, 'Advil', 21.25, 'img/advil.png', this)"><span class="material-icons">add</span></button></div>
+            <div class="product-card" data-name="eno">
+                <div class="promo-ribbon"><span>PROMOÇÃO</span></div>
+                <div class="product-img-container"><img src="img/eno.png" class="product-img"></div>
+                <div class="product-info-wrapper">
+                    <h3 class="product-title">Eno Sal de Fruta</h3>
+                    <div class="cupom-badge"><span class="material-icons" style="font-size:10px">local_offer</span> CUPOM: ENO10</div>
+                    <div class="price-container"><span class="grid-old-price">R$ 4,50</span><span class="product-price">R$ 2,47</span></div>
+                </div>
+                <button class="btn-add-grid" onclick="adicionarAoCarrinho(12, 'Eno', 2.47, 'img/eno.png', this)"><span class="material-icons">add</span></button>
+            </div>
+            <div class="product-card" data-name="vitamina c"><div class="promo-ribbon"><span>PROMOÇÃO</span></div><div class="product-img-container"><img src="img/vitamina_c.png" class="product-img"></div><div class="product-info-wrapper"><h3 class="product-title">Vitamina C 1g</h3><div class="price-container"><span class="grid-old-price">R$ 16,00</span><span class="product-price">R$ 11,00</span></div></div><button class="btn-add-grid" onclick="adicionarAoCarrinho(9, 'Vitamina C', 11, 'img/vitamina_c.png', this)"><span class="material-icons">add</span></button></div>
+            <div class="product-card" data-name="neosaldina"><div class="promo-ribbon"><span>PROMOÇÃO</span></div><div class="product-img-container"><img src="img/neosaldina.png" class="product-img"></div><div class="product-info-wrapper"><h3 class="product-title">Neosaldina 30 Drg.</h3><div class="price-container"><span class="grid-old-price">R$ 32,00</span><span class="product-price">R$ 19,50</span></div></div><button class="btn-add-grid" onclick="adicionarAoCarrinho(2, 'Neosaldina', 19.5, 'img/neosaldina.png', this)"><span class="material-icons">add</span></button></div>
+        </div>
+
+        <h3 class="section-title">Kits Promocionais</h3>
+        <section id="kitsSection">
+            <div class="kits-scroll" id="kitsScroll">
+                <div class="kit-card"><div class="kit-header"><span class="kit-tag">SAÚDE</span><span class="material-icons" style="color:#DDD">info</span></div><div class="kit-content"><div class="kit-imgs"><img src="img/vick.png" style="left:0; z-index:2"><img src="img/vitamina_c.png" style="left:25px; z-index:1"></div><div class="kit-details"><p class="kit-name">Kit Inverno</p><p class="kit-items-list">Vick + Vitamina C</p></div></div><div class="kit-footer"><span class="kit-price">R$ 45,00</span><button class="btn-add-kit" onclick="adicionarAoCarrinho(99, 'Kit Inverno', 45, '', this)">ADICIONAR</button></div></div>
+                <div class="kit-card"><div class="kit-header"><span class="kit-tag">ALÍVIO</span><span class="material-icons" style="color:#DDD">info</span></div><div class="kit-content"><div class="kit-imgs"><img src="img/dorflex.png" style="left:0; z-index:2"><img src="img/eno.png" style="left:25px; z-index:1"></div><div class="kit-details"><p class="kit-name">Kit Alívio</p><p class="kit-items-list">Dorflex + Eno Sal</p></div></div><div class="kit-footer"><span class="kit-price">R$ 28,00</span><button class="btn-add-kit" onclick="adicionarAoCarrinho(98, 'Kit Alívio', 28, '', this)">ADICIONAR</button></div></div>
+                <div class="kit-card"><div class="kit-header"><span class="kit-tag">ENERGIA</span><span class="material-icons" style="color:#DDD">info</span></div><div class="kit-content"><div class="kit-imgs"><img src="img/centrum.png" style="left:0; z-index:2"><img src="img/vitamina_c.png" style="left:25px; z-index:1"></div><div class="kit-details"><p class="kit-name">Kit Energia</p><p class="kit-items-list">Centrum + Vitamina C</p></div></div><div class="kit-footer"><span class="kit-price">R$ 62,00</span><button class="btn-add-kit" onclick="adicionarAoCarrinho(97, 'Kit Energia', 62, '', this)">ADICIONAR</button></div></div>
+                <div class="kit-card"><div class="kit-header"><span class="kit-tag">BELEZA</span><span class="material-icons" style="color:#DDD">info</span></div><div class="kit-content"><div class="kit-imgs"><img src="https://placehold.co/50" style="left:0; z-index:2"><img src="https://placehold.co/50" style="left:25px; z-index:1"></div><div class="kit-details"><p class="kit-name">Kit Skincare</p><p class="kit-items-list">Limpeza + Hidratação</p></div></div><div class="kit-footer"><span class="kit-price">R$ 89,90</span><button class="btn-add-kit" onclick="adicionarAoCarrinho(96, 'Kit Skincare', 89.9, '', this)">ADICIONAR</button></div></div>
+                <div class="kit-card"><div class="kit-header"><span class="kit-tag">FITNESS</span><span class="material-icons" style="color:#DDD">info</span></div><div class="kit-content"><div class="kit-imgs"><img src="https://placehold.co/50" style="left:0; z-index:2"><img src="https://placehold.co/50" style="left:25px; z-index:1"></div><div class="kit-details"><p class="kit-name">Kit Treino</p><p class="kit-items-list">Whey + Creatina</p></div></div><div class="kit-footer"><span class="kit-price">R$ 140,00</span><button class="btn-add-kit" onclick="adicionarAoCarrinho(93, 'Kit Treino', 140, '', this)">ADICIONAR</button></div></div>
+            </div>
+        </section>
+        <p class="disclaimer">Os descontos não são acumulativos com outras promoções.</p>
+    </main>
+
+    <nav class="mobile-footer">
+        <a href="loja_mobile.html" class="nav-item"><span class="material-icons">store</span><span>LOJA</span></a>
+        <a href="pedidos_mobile.html" class="nav-item"><span class="material-icons">assignment</span><span>PEDIDOS</span></a>
+        <a href="ofertas_mobile.html" class="nav-item active"><span class="material-icons">local_offer</span><span>OFERTAS</span></a>
+        <a href="#" class="nav-item"><span class="material-icons">favorite</span><span>FAVORITOS</span></a>
+        <a href="#" class="nav-item"><span class="material-icons">person</span><span>PERFIL</span></a>
+    </nav>
+
+    <script>
+        function searchOffers() {
+            const query = document.getElementById('mainSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.product-card');
+            const sectionsToHide = ['promoSection', 'kitsSection', 'timerStrip', 'loginSection'];
+            if (query.length > 0) {
+                sectionsToHide.forEach(id => { if(document.getElementById(id)) document.getElementById(id).style.display = 'none'; });
+                cards.forEach(card => {
+                    const name = card.getAttribute('data-name');
+                    card.style.display = name.includes(query) ? 'flex' : 'none';
+                });
+            } else {
+                sectionsToHide.forEach(id => { if(document.getElementById(id)) document.getElementById(id).style.display = 'block'; });
+                cards.forEach(card => card.style.display = 'flex');
+            }
+        }
+
+        const carousel = document.getElementById('megaCarousel');
+        const slides = document.querySelectorAll('.super-slide');
+        const dotsContainer = document.getElementById('dotsContainer');
+        
+        slides.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.className = `dot ${i === 0 ? 'active' : ''}`;
+            dotsContainer.appendChild(dot);
+        });
+
+        function updateDots() {
+            const index = Math.round(carousel.scrollLeft / (carousel.clientWidth * 0.88));
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === index));
+        }
+        carousel.addEventListener('scroll', updateDots);
+
+        function manualChangeSlide(direction) {
+            const width = carousel.querySelector('.super-slide').clientWidth + 15;
+            carousel.scrollBy({ left: direction * width, behavior: 'smooth' });
+        }
+
+        setInterval(() => {
+            if (carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 10) carousel.scrollTo({ left: 0, behavior: 'smooth' });
+            else manualChangeSlide(1);
+        }, 6000);
+
+        function megaAdd(id, nome, preco, img, btn) {
+            const container = btn.parentElement;
+            if(container.classList.contains('active')) { window.location.href = 'carrinho_mobile.html'; return; }
+            adicionarAoCarrinho(id, nome, preco, img, btn, true);
+            container.classList.add('active');
+            setTimeout(() => { container.classList.remove('active'); }, 4000);
+        }
+
+        function adicionarAoCarrinho(id, nome, preco, img, btn, isMega = false) {
+            let cart = JSON.parse(localStorage.getItem('cart_mobile')) || [];
+            const existing = cart.find(item => item.id === id);
+            if (existing) existing.qty++; else cart.push({ id, nome, preco, img, qty: 1 });
+            localStorage.setItem('cart_mobile', JSON.stringify(cart));
+            updateCartBadge();
+            if (!isMega) {
+                btn.classList.add('added');
+                const originalText = btn.innerText;
+                const isKit = btn.classList.contains('btn-add-kit');
+                if(!isKit) {
+                    const icon = btn.querySelector('.material-icons');
+                    if(icon) icon.textContent = 'check';
+                } else {
+                    btn.innerText = 'OK!';
+                }
+                setTimeout(() => { 
+                    btn.classList.remove('added'); 
+                    if(!isKit) {
+                        const icon = btn.querySelector('.material-icons');
+                        if(icon) icon.textContent = 'add';
+                    } else {
+                        btn.innerText = originalText;
+                    }
+                }, 1000);
+            }
+        }
+
+        function enableDrag(id) {
+            const el = document.getElementById(id); if(!el) return;
+            let isDown = false, startX, scrollLeft;
+            el.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - el.offsetLeft; scrollLeft = el.scrollLeft; el.style.cursor='grabbing'; });
+            el.addEventListener('mouseleave', () => { isDown = false; el.style.cursor='grab'; });
+            el.addEventListener('mouseup', () => { isDown = false; el.style.cursor='grab'; });
+            el.addEventListener('mousemove', (e) => { if(!isDown) return; e.preventDefault(); const x = e.pageX - el.offsetLeft; const walk = (x - startX) * 2; el.scrollLeft = scrollLeft - walk; });
+            el.addEventListener('touchstart', (e) => { isDown = true; startX = e.touches[0].pageX - el.offsetLeft; scrollLeft = el.scrollLeft; });
+            el.addEventListener('touchend', () => { isDown = false; });
+            el.addEventListener('touchmove', (e) => { if(!isDown) return; const x = e.touches[0].pageX - el.offsetLeft; const walk = (x - startX) * 2; el.scrollLeft = scrollLeft - walk; });
+        }
+
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart_mobile')) || [];
+            document.getElementById('cartBadge').innerText = cart.reduce((acc, i) => acc + i.qty, 0);
+        }
+
+        function startTimer(duration, display) {
+            let timer = duration, h, m, s;
+            setInterval(() => {
+                h = parseInt(timer / 3600, 10); m = parseInt((timer % 3600) / 60, 10); s = parseInt(timer % 60, 10);
+                display.textContent = (h<10?"0"+h:h)+":"+(m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
+                if (--timer < 0) timer = duration;
+            }, 1000);
+        }
+
+        window.onload = () => { 
+            startTimer(9850, document.querySelector('#timer')); 
+            updateCartBadge();
+            enableDrag('kitsScroll');
+        };
+    </script>
+</body>
+</html>

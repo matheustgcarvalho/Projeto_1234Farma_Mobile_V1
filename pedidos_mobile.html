@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1234Farma - Meus Pedidos</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root { 
+            --tech-purple: #2E1A47;
+            --neon-mint: #00D284;
+            --page-bg: #F8F9FA;       
+            --card-white: #FFFFFF;
+            --text-gray: #666;
+            --border-color: #EEE;
+            --element-bg: #E9ECEF;
+        }
+
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            scrollbar-width: none;
+        }
+        *::-webkit-scrollbar { display: none; }
+        
+        body { background-color: var(--page-bg); color: var(--tech-purple); min-height: 100vh; padding-bottom: 80px; overflow-y: scroll; }
+
+        /* === HEADER FIXO === */
+        .fixed-header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background-color: var(--card-white); z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding-top: 30px;
+        }
+
+        .header-top { display: flex; align-items: center; padding: 15px 20px; }
+        .header-title { flex-grow: 1; text-align: center; font-weight: 800; font-size: 1.1rem; }
+        .btn-back { cursor: pointer; color: var(--tech-purple); }
+
+        /* === BARRA DE PESQUISA (PADRÃO LOGIN) === */
+        .filter-section { padding: 0 15px 15px 15px; }
+        .search-bar-wrapper { display: flex; gap: 10px; align-items: center; }
+
+        .search-input-container {
+            flex-grow: 1;
+            position: relative;
+            background-color: var(--element-bg);
+            border-radius: 20px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-icon-span { position: absolute; left: 15px; font-size: 1.2rem; color: var(--tech-purple); opacity: 0.5; }
+
+        .search-box {
+            width: 100%; background: transparent; border: none;
+            padding: 0 15px 0 45px; font-size: 0.9rem; color: var(--tech-purple); outline: none;
+        }
+
+        /* Botão de Data - Layout e Funcionalidade */
+        .date-trigger {
+            width: 42px; height: 42px; border-radius: 50%;
+            background-color: var(--element-bg);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--tech-purple);
+            border: none; outline: none;
+        }
+
+        #dateInput {
+            position: absolute;
+            visibility: hidden;
+            width: 0; height: 0;
+        }
+
+        .quick-filters { display: flex; gap: 8px; margin-top: 15px; overflow-x: auto; }
+        .chip { 
+            padding: 8px 16px; border-radius: 20px; background: #EEE; 
+            font-size: 0.75rem; font-weight: 700; color: var(--text-gray); 
+            white-space: nowrap; cursor: pointer;
+        }
+        .chip.active { background: var(--tech-purple); color: var(--neon-mint); }
+
+        main { padding: 220px 15px 20px 15px; }
+
+        /* === CARD DE PEDIDO === */
+        .order-card {
+            background-color: var(--card-white); border-radius: 20px;
+            padding: 18px; margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04); border: 1px solid var(--border-color);
+        }
+
+        .order-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;
+        }
+
+        .order-id { font-weight: 800; font-size: 0.95rem; display: block; }
+        .order-date { font-size: 0.8rem; color: var(--text-gray); }
+        
+        .status-badge { font-size: 0.7rem; font-weight: 800; padding: 5px 10px; border-radius: 8px; text-transform: uppercase; }
+        .status-retirado { background: #E8F5E9; color: #2E7D32; }
+        .status-pendente { background: #FFF3E0; color: #EF6C00; border: 1px solid #EF6C00; animation: pulse 1.8s infinite; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+        .order-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .info-item { display: flex; flex-direction: column; gap: 3px; }
+        .info-label { font-size: 0.65rem; color: #AAA; font-weight: 700; text-transform: uppercase; }
+        .info-value { font-size: 0.85rem; font-weight: 700; color: var(--tech-purple); }
+
+        .order-items-box { background: #F9FAFB; border-radius: 12px; padding: 12px; border: 1px solid #F0F0F0; }
+        .item-row { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 6px 0; border-bottom: 1px dashed #DDD; }
+        .item-row:last-child { border-bottom: none; }
+        .item-qty { color: var(--neon-mint); font-weight: 800; margin-right: 5px; }
+
+        .order-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 12px; border-top: 1px solid var(--border-color); }
+        .total-value { font-size: 1.2rem; font-weight: 900; color: var(--tech-purple); }
+
+        .mobile-footer { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--tech-purple); height: 60px; display: flex; justify-content: space-around; align-items: center; z-index: 2000; border-top: 2px solid var(--neon-mint); }
+        .nav-item { color: white; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.55rem; font-weight: 600; opacity: 0.6; }
+        .nav-item.active { color: var(--neon-mint); opacity: 1; }
+        .nav-item .material-icons { font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <div class="fixed-header">
+        <div class="header-top">
+            <span class="material-icons btn-back" onclick="window.location.href='loja_mobile.html'">arrow_back</span>
+            <div class="header-title">Meus Pedidos</div>
+            <div style="width: 24px;"></div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="search-bar-wrapper">
+                <div class="search-input-container">
+                    <span class="material-icons search-icon-span">search</span>
+                    <input type="text" id="searchInput" class="search-box" placeholder="Buscar ID ou remédio..." onkeyup="filtrarGeral()">
+                </div>
+                
+                <button class="date-trigger" onclick="abrirCalendario()">
+                    <span class="material-icons">calendar_month</span>
+                    <input type="date" id="dateInput" onchange="filtrarPorDataCalendario()">
+                </button>
+            </div>
+            <div class="quick-filters">
+                <div class="chip active" onclick="aplicarFiltroChip('todos', this)">Todos</div>
+                <div class="chip" onclick="aplicarFiltroChip('pendente', this)">Pendentes</div>
+                <div class="chip" onclick="aplicarFiltroChip('hoje', this)">Hoje</div>
+                <div class="chip" onclick="aplicarFiltroChip('retirado', this)">Retirados</div>
+            </div>
+        </div>
+    </div>
+
+    <main id="containerPedidos">
+        <div class="order-card" data-status="pendente" data-date-raw="2026-01-05">
+            <div class="order-header">
+                <div><span class="order-id">ID: #89102</span><span class="order-date">Hoje (05 Jan) • 16:10</span></div>
+                <span class="status-badge status-pendente">Aguardando Retirada</span>
+            </div>
+            <div class="order-info-grid">
+                <div class="info-item"><span class="info-label">Máquina</span><span class="info-value">M01 - Praça Central</span></div>
+                <div class="info-item"><span class="info-label">Pagamento</span><span class="info-value">PIX</span></div>
+                <div class="info-item"><span class="info-label">Hora Pedido</span><span class="info-value">16:10:05</span></div>
+                <div class="info-item"><span class="info-label">Status</span><span class="info-value">Pronto</span></div>
+            </div>
+            <div class="order-items-box">
+                <div class="item-row"><span><span class="item-qty">1x</span> Advil 400mg</span><span>R$ 25,00</span></div>
+                <div class="item-row"><span><span class="item-qty">1x</span> Epocler 10ml</span><span>R$ 3,50</span></div>
+            </div>
+            <div class="order-footer"><span class="info-label">Total Pago</span><span class="total-value">R$ 28,50</span></div>
+        </div>
+
+        <div class="order-card" data-status="retirado" data-date-raw="2026-01-05">
+            <div class="order-header">
+                <div><span class="order-id">ID: #89155</span><span class="order-date">Hoje (05 Jan) • 14:20</span></div>
+                <span class="status-badge status-retirado">Retirado</span>
+            </div>
+            <div class="order-info-grid">
+                <div class="info-item"><span class="info-label">Máquina</span><span class="info-value">M02 - Centro</span></div>
+                <div class="info-item"><span class="info-label">Pagamento</span><span class="info-value">Crédito</span></div>
+                <div class="info-item"><span class="info-label">Hora Pedido</span><span class="info-value">14:20:00</span></div>
+                <div class="info-item"><span class="info-label">Hora Retirada</span><span class="info-value">14:22:15</span></div>
+            </div>
+            <div class="order-items-box">
+                <div class="item-row"><span><span class="item-qty">1x</span> Dorflex 500mg</span><span>R$ 15,90</span></div>
+                <div class="item-row"><span><span class="item-qty">1x</span> Paracetamol 750mg</span><span>R$ 8,00</span></div>
+                <div class="item-row"><span><span class="item-qty">1x</span> Buscopan Duo</span><span>R$ 22,00</span></div>
+                <div class="item-row"><span><span class="item-qty">1x</span> Neosaldina 30drg</span><span>R$ 29,50</span></div>
+                <div class="item-row"><span><span class="item-qty">1x</span> Vick Vaporub 12g</span><span>R$ 28,00</span></div>
+            </div>
+            <div class="order-footer"><span class="info-label">Total Pago</span><span class="total-value">R$ 103,40</span></div>
+        </div>
+
+        <div class="order-card" data-status="retirado" data-date-raw="2026-01-04">
+            <div class="order-header">
+                <div><span class="order-id">ID: #88901</span><span class="order-date">04 Jan 2026 • 19:30</span></div>
+                <span class="status-badge status-retirado">Retirado</span>
+            </div>
+            <div class="order-info-grid">
+                <div class="info-item"><span class="info-label">Máquina</span><span class="info-value">M05 - Shopping</span></div>
+                <div class="info-item"><span class="info-label">Pagamento</span><span class="info-value">Débito</span></div>
+                <div class="info-item"><span class="info-label">Hora Pedido</span><span class="info-value">19:30:12</span></div>
+                <div class="info-item"><span class="info-label">Hora Retirada</span><span class="info-value">19:34:45</span></div>
+            </div>
+            <div class="order-items-box">
+                <div class="item-row"><span><span class="item-qty">2x</span> Eno Sachê</span><span>R$ 9,00</span></div>
+            </div>
+            <div class="order-footer"><span class="info-label">Total Pago</span><span class="total-value">R$ 9,00</span></div>
+        </div>
+
+        <div class="order-card" data-status="retirado" data-date-raw="2026-01-04">
+            <div class="order-header">
+                <div><span class="order-id">ID: #88850</span><span class="order-date">04 Jan 2026 • 08:15</span></div>
+                <span class="status-badge status-retirado">Retirado</span>
+            </div>
+            <div class="order-info-grid">
+                <div class="info-item"><span class="info-label">Máquina</span><span class="info-value">M03 - Metro</span></div>
+                <div class="info-item"><span class="info-label">Pagamento</span><span class="info-value">PIX</span></div>
+                <div class="info-item"><span class="info-label">Hora Pedido</span><span class="info-value">08:15:22</span></div>
+                <div class="info-item"><span class="info-label">Hora Retirada</span><span class="info-value">08:16:50</span></div>
+            </div>
+            <div class="order-items-box">
+                <div class="item-row"><span><span class="item-qty">1x</span> Cimegripe</span><span>R$ 14,00</span></div>
+            </div>
+            <div class="order-footer"><span class="info-label">Total Pago</span><span class="total-value">R$ 14,00</span></div>
+        </div>
+
+        <div class="order-card" data-status="retirado" data-date-raw="2026-01-03">
+            <div class="order-header">
+                <div><span class="order-id">ID: #88720</span><span class="order-date">03 Jan 2026 • 22:05</span></div>
+                <span class="status-badge status-retirado">Retirado</span>
+            </div>
+            <div class="order-info-grid">
+                <div class="info-item"><span class="info-label">Máquina</span><span class="info-value">M01 - Praça</span></div>
+                <div class="info-item"><span class="info-label">Pagamento</span><span class="info-value">Crédito</span></div>
+                <div class="info-item"><span class="info-label">Hora Pedido</span><span class="info-value">22:05:10</span></div>
+                <div class="info-item"><span class="info-label">Hora Retirada</span><span class="info-value">22:08:33</span></div>
+            </div>
+            <div class="order-items-box">
+                <div class="item-row"><span><span class="item-qty">1x</span> Luftal 125mg</span><span>R$ 19,00</span></div>
+            </div>
+            <div class="order-footer"><span class="info-label">Total Pago</span><span class="total-value">R$ 19,00</span></div>
+        </div>
+
+        <div class="order-card" data-status="retirado" data-date-raw="2026-01-03">
+            <div class="order-header">
+                <div><span class="order-id">ID: #88650</span><span class="order-date">03 Jan 2026 • 11:40</span></div>
+                <span class="status-badge status-retirado">Retirado</span>
+            </div>
+            <div class="order-info-grid">
+                <div class="info-item"><span class="info-label">Máquina</span><span class="info-value">M04 - Terminal</span></div>
+                <div class="info-item"><span class="info-label">Pagamento</span><span class="info-value">Débito</span></div>
+                <div class="info-item"><span class="info-label">Hora Pedido</span><span class="info-value">11:40:02</span></div>
+                <div class="info-item"><span class="info-label">Hora Retirada</span><span class="info-value">11:43:10</span></div>
+            </div>
+            <div class="order-items-box">
+                <div class="item-row"><span><span class="item-qty">2x</span> Vitamina C 1g</span><span>R$ 22,00</span></div>
+            </div>
+            <div class="order-footer"><span class="info-label">Total Pago</span><span class="total-value">R$ 22,00</span></div>
+        </div>
+
+        <div class="order-card" data-status="retirado" data-date-raw="2026-01-02">
+            <div class="order-header">
+                <div><span class="order-id">ID: #88510</span><span class="order-date">02 Jan 2026 • 14:55</span></div>
+                <span class="status-badge status-retirado">Retirado</span>
+            </div>
+            <div class="order-info-grid">
+                <div class="info-item"><span class="info-label">Máquina</span><span class="info-value">M02 - Centro</span></div>
+                <div class="info-item"><span class="info-label">Pagamento</span><span class="info-value">PIX</span></div>
+                <div class="info-item"><span class="info-label">Hora Pedido</span><span class="info-value">14:55:40</span></div>
+                <div class="info-item"><span class="info-label">Hora Retirada</span><span class="info-value">14:57:12</span></div>
+            </div>
+            <div class="order-items-box">
+                <div class="item-row"><span><span class="item-qty">1x</span> Nebacetin</span><span>R$ 19,00</span></div>
+            </div>
+            <div class="order-footer"><span class="info-label">Total Pago</span><span class="total-value">R$ 19,00</span></div>
+        </div>
+
+        <div class="order-card" data-status="retirado" data-date-raw="2026-01-01">
+            <div class="order-header">
+                <div><span class="order-id">ID: #87500</span><span class="order-date">01 Jan 2026 • 09:10</span></div>
+                <span class="status-badge status-retirado">Retirado</span>
+            </div>
+            <div class="order-info-grid">
+                <div class="info-item"><span class="info-label">Máquina</span><span class="info-value">M05 - Sul</span></div>
+                <div class="info-item"><span class="info-label">Pagamento</span><span class="info-value">Cartão</span></div>
+                <div class="info-item"><span class="info-label">Hora Pedido</span><span class="info-value">09:10:00</span></div>
+                <div class="info-item"><span class="info-label">Hora Retirada</span><span class="info-value">09:12:45</span></div>
+            </div>
+            <div class="order-items-box">
+                <div class="item-row"><span><span class="item-qty">1x</span> Centrum A-Z</span><span>R$ 85,00</span></div>
+            </div>
+            <div class="order-footer"><span class="info-label">Total Pago</span><span class="total-value">R$ 85,00</span></div>
+        </div>
+    </main>
+
+    <nav class="mobile-footer">
+        <a href="loja_mobile.html" class="nav-item"><span class="material-icons">store</span><span>LOJA</span></a>
+        <a href="pedidos_mobile.html" class="nav-item active"><span class="material-icons">assignment</span><span>PEDIDOS</span></a>
+        <a href="ofertas_mobile.html" class="nav-item"><span class="material-icons">local_offer</span><span>OFERTAS</span></a>
+        <a href="#" class="nav-item"><span class="material-icons">favorite</span><span>FAVORITOS</span></a>
+        <a href="#" class="nav-item"><span class="material-icons">person</span><span>PERFIL</span></a>
+    </nav>
+
+    <script>
+        // FUNÇÃO PARA ABRIR O CALENDÁRIO FORÇADAMENTE
+        function abrirCalendario() {
+            const input = document.getElementById('dateInput');
+            try {
+                // Tenta o método moderno showPicker()
+                input.showPicker();
+            } catch (e) {
+                // Fallback para navegadores antigos
+                input.click();
+            }
+        }
+
+        function filtrarGeral() {
+            const busca = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.getElementsByClassName('order-card');
+            for (let card of cards) {
+                const id = card.querySelector('.order-id').innerText.toLowerCase();
+                const itens = card.querySelector('.order-items-box').innerText.toLowerCase();
+                card.style.display = (id.includes(busca) || itens.includes(busca)) ? "" : "none";
+            }
+        }
+
+        function filtrarPorDataCalendario() {
+            const dataSelecionada = document.getElementById('dateInput').value;
+            const cards = document.getElementsByClassName('order-card');
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            if(!dataSelecionada) return;
+            for (let card of cards) {
+                const dataCard = card.getAttribute('data-date-raw');
+                card.style.display = (dataCard === dataSelecionada) ? "" : "none";
+            }
+        }
+
+        function aplicarFiltroChip(tipo, element) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById('dateInput').value = "";
+            const cards = document.getElementsByClassName('order-card');
+            const hoje = "2026-01-05";
+            for (let card of cards) {
+                const status = card.getAttribute('data-status');
+                const dataRaw = card.getAttribute('data-date-raw');
+                if (tipo === 'todos') card.style.display = "";
+                else if (tipo === 'pendente') card.style.display = (status === 'pendente') ? "" : "none";
+                else if (tipo === 'hoje') card.style.display = (dataRaw === hoje) ? "" : "none";
+                else if (tipo === 'retirado') card.style.display = (status === 'retirado') ? "" : "none";
+            }
+        }
+    </script>
+</body>
+</html>

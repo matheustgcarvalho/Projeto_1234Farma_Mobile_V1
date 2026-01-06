@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1234Farma - Carrinho</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root { 
+            --tech-purple: #2E1A47;
+            --neon-mint: #00D284;
+            --page-bg: #F8F9FA;       
+            --element-bg: #E9ECEF;    
+            --white-pure: #FFFFFF;    
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            --warning-red: #ff4757; 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; user-select: none; scrollbar-width: none; }
+        *::-webkit-scrollbar { display: none; }
+        
+        body { background-color: var(--page-bg); color: var(--tech-purple); height: 100vh; display: flex; flex-direction: column; overflow: hidden; font-size: 13px; }
+        
+        header { 
+            background-color: var(--white-pure); 
+            padding: 45px 15px 15px 15px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid #eee; flex-shrink: 0; position: relative;
+        }
+
+        .btn-back-shop { text-decoration: none; color: var(--tech-purple); display: flex; align-items: center; cursor: pointer; z-index: 2; }
+        
+        .brand-container-central { 
+            position: absolute; left: 50%; transform: translateX(-50%); 
+            text-align: center; display: flex; flex-direction: column; align-items: center;
+        }
+        .brand-logo-central { font-size: 1.2rem; font-weight: 900; line-height: 1; }
+        .brand-1234 { color: var(--neon-mint); }
+        .brand-farma { color: var(--tech-purple); }
+        .sub-brand-text { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: #888; letter-spacing: 2px; margin-top: 2px; }
+
+        .btn-chat-atendente { color: var(--tech-purple); cursor: pointer; display: flex; align-items: center; z-index: 2; }
+
+        main { flex-grow: 1; padding-bottom: 180px; overflow-y: auto; display: flex; flex-direction: column; }
+
+        .section-divider {
+            width: 100%;
+            height: 8px;
+            background-color: #f0f0f0;
+            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+            margin: 10px 0 25px 0;
+            flex-shrink: 0;
+        }
+
+        .h-scroll-section { margin-bottom: 25px; padding: 0 15px; }
+        /* Adicionado cursor grab para indicar que é arrastável */
+        .h-scroll-container { display: flex; gap: 12px; overflow-x: auto; padding: 5px 0; cursor: grab; user-select: none; }
+        .h-scroll-container:active { cursor: grabbing; }
+
+        .h-card { flex-shrink: 0; width: 135px; background: var(--white-pure); border-radius: 15px; padding: 12px; border: 1px solid #eee; text-align: center; box-shadow: var(--card-shadow); pointer-events: auto; }
+        .h-img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px; mix-blend-mode: multiply; pointer-events: none; }
+        .h-name { font-size: 0.75rem; font-weight: 700; height: 32px; overflow: hidden; margin-bottom: 4px; line-height: 1.2; pointer-events: none; }
+        .price-old { font-size: 0.65rem; color: #999; text-decoration: line-through; pointer-events: none; }
+        .price-new { font-size: 0.9rem; font-weight: 800; color: var(--neon-mint); pointer-events: none; }
+        .btn-h-add { width: 100%; border: none; background: var(--tech-purple); color: white; border-radius: 8px; padding: 6px; font-size: 0.7rem; margin-top: 8px; font-weight: 700; cursor: pointer;}
+
+        .cart-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 15px; }
+        .page-title { font-size: 1.3rem; font-weight: 800; color: var(--tech-purple); display: flex; align-items: center; gap: 8px; }
+        .cart-icon-title { color: var(--neon-mint); font-size: 1.6rem; }
+        
+        .btn-clear-cart { 
+            background: none; border: 1px solid #eee; color: #999; 
+            padding: 6px 12px; border-radius: 10px; cursor: pointer; 
+            display: flex; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 600; 
+        }
+
+        .pickup-location-card { margin: 0 15px 15px 15px; padding: 12px; background: var(--white-pure); border-radius: 15px; border: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px; box-shadow: var(--card-shadow); }
+        .pickup-icon { color: var(--neon-mint); font-size: 1.5rem; }
+        .pickup-info h4 { font-size: 0.75rem; font-weight: 800; color: var(--tech-purple); text-transform: uppercase; }
+        .pickup-info p { font-size: 0.7rem; color: #777; font-weight: 600; }
+
+        .cart-list-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; padding: 0 15px; }
+        
+        .cart-item { 
+            background-color: var(--white-pure); border-radius: 15px; display: flex; 
+            justify-content: space-between; align-items: center; min-height: 90px; 
+            border: 1px solid #f0f0f0; box-shadow: var(--card-shadow); overflow: hidden;
+        }
+        
+        .cart-item-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .cart-item-img-container { width: 85px; height: 90px; background-color: #f9f9f9; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-right: 1px solid #f0f0f0; }
+        .cart-item-img { width: 75%; height: 75%; object-fit: contain; mix-blend-mode: multiply; }
+        
+        .item-details { padding: 10px 5px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .item-name { font-size: 0.95rem; font-weight: 900; color: var(--tech-purple); line-height: 1.2; margin-bottom: 2px; }
+        .item-vendor-small { font-size: 0.6rem; color: #aaa; text-transform: lowercase; margin-bottom: 4px; }
+        .item-price-total { color: var(--tech-purple); font-weight: 900; font-size: 1.05rem; }
+
+        .quantity-controls { display: flex; align-items: center; gap: 8px; background-color: #f8f9fa; padding: 4px 8px; border-radius: 20px; margin-right: 12px; border: 1px solid #eee; }
+        .btn-qty { width: 22px; height: 22px; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        .btn-decrease { background-color: var(--white-pure); color: var(--warning-red); }
+        .btn-increase { background-color: var(--neon-mint); color: var(--tech-purple); }
+        .qty-display { font-weight: 800; font-size: 0.85rem; min-width: 15px; text-align: center; }
+
+        .fixed-footer-container { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--white-pure); z-index: 1000; border-top: 1px solid #eee; }
+        .coupon-toggle-bar { background: #f1f3f5; padding: 8px; text-align: center; font-weight: 700; color: var(--tech-purple); font-size: 0.8rem; cursor: pointer; }
+        .coupon-expandable { display: none; padding: 12px; background: #f1f3f5; border-top: 1px solid #eee; }
+        .coupon-input-group { display: flex; gap: 8px; }
+        .coupon-input-group input { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #ddd; outline: none; }
+        .btn-apply { background: var(--tech-purple); color: var(--neon-mint); border: none; padding: 0 12px; border-radius: 8px; font-weight: 800; }
+
+        .footer-summary { padding: 10px 15px 20px 15px; }
+        .cart-total-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .total-value { color: var(--tech-purple); font-size: 1.5rem; font-weight: 900; }
+        .btn-finish-order { width: 100%; background-color: var(--neon-mint); color: var(--tech-purple); padding: 14px; border-radius: 12px; font-weight: 900; border: none; font-size: 1rem; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(0, 210, 132, 0.2); }
+
+        .empty-cart-state { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; }
+        .btn-go-store { background: var(--tech-purple); color: var(--neon-mint); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; margin-top: 15px; cursor: pointer; font-size: 0.8rem; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(46, 26, 71, 0.6); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-content { background-color: var(--white-pure); border-radius: 20px; padding: 25px; width: 85%; text-align: center; border: 2px solid var(--tech-purple); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="btn-back-shop" onclick="window.location.href='loja_mobile.html'">
+            <span class="material-icons">chevron_left</span>
+        </div>
+        <div class="brand-container-central">
+            <div class="brand-logo-central">
+                <span class="brand-1234">1234</span><span class="brand-farma">Farma</span>
+            </div>
+            <div class="sub-brand-text">Carrinho</div>
+        </div>
+        <div class="btn-chat-atendente" onclick="alert('Chamando atendente...')">
+            <span class="material-icons">forum</span>
+        </div>
+    </header>
+
+    <main>
+        <section class="h-scroll-section">
+            <div style="font-weight: 900; margin-bottom: 10px; color: var(--tech-purple); font-size: 0.9rem;">Leve também (Ofertas 🔥)</div>
+            <div class="h-scroll-container" id="upsellContainer"></div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <div class="cart-header-row">
+            <h1 class="page-title">
+                <span class="material-icons cart-icon-title">shopping_cart</span>
+                Seu Pedido
+            </h1>
+            <button id="btnClearCart" class="btn-clear-cart">
+                <span class="material-icons" style="font-size: 1.1rem;">delete_outline</span>
+                Esvaziar
+            </button>
+        </div>
+
+        <div id="cartContentWrapper">
+            <div class="pickup-location-card">
+                <span class="material-icons pickup-icon">location_on</span>
+                <div class="pickup-info">
+                    <h4>Retirada na Máquina 22</h4>
+                    <p>Avenida Paulista, 45 - São Paulo, SP</p>
+                </div>
+            </div>
+            <div id="cartListContainer" class="cart-list-container"></div>
+        </div>
+
+        <div class="empty-cart-state" id="emptyCartState">
+            <span class="material-icons" style="font-size: 4rem; color: #ddd;">shopping_basket</span>
+            <h3 style="margin-top:10px; color:#aaa">Carrinho vazio</h3>
+            <button class="btn-go-store" onclick="window.location.href='loja_mobile.html'">IR PARA A LOJA</button>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <section class="h-scroll-section">
+            <div style="font-weight: 900; margin-bottom: 10px; color: var(--tech-purple); font-size: 0.9rem;">Seus Favoritos ⭐</div>
+            <div class="h-scroll-container" id="favoritesContainer"></div>
+        </section>
+    </main>
+
+    <div class="fixed-footer-container">
+        <div class="coupon-toggle-bar" id="couponBar">Possui cupom? Aplicar</div>
+        <div class="coupon-expandable" id="couponInputArea">
+            <div class="coupon-input-group">
+                <input type="text" placeholder="Código">
+                <button class="btn-apply">APLICAR</button>
+            </div>
+        </div>
+
+        <div class="footer-summary">
+            <div class="cart-total-summary">
+                <div class="total-labels">
+                    <div style="font-weight: 800; font-size: 0.85rem; color: #777;">Total:</div>
+                    <div id="totalItemsCount" style="font-size: 0.75rem; color: var(--tech-purple); font-weight: 800;">0 produtos</div>
+                </div>
+                <span id="totalValueDisplay" class="total-value">R$ 0,00</span>
+            </div>
+            <button class="btn-finish-order" id="btnFinalizar">
+                FINALIZAR PAGAMENTO <span class="material-icons">arrow_forward</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <div style="font-size: 1.2rem; font-weight: 900; margin-bottom: 10px; color: var(--tech-purple);">Limpar carrinho?</div>
+            <div style="display: flex; gap: 10px;">
+                <button id="btnCancelClear" style="flex:1; padding:12px; border-radius:10px; border:none; background:#f0f0f0; font-weight:700; color:var(--tech-purple)">Não</button>
+                <button id="btnConfirmClear" style="flex:1; padding:12px; border-radius:10px; border:none; background:var(--warning-red); color:white; font-weight:700">Sim</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const CART_KEY = 'cart_mobile';
+            
+            const promos = [
+                { id: 99, nome: "Vitamina C 1g Efervescente", precoOld: 25.90, preco: 14.90, img: "img/vitamina_c.png" },
+                { id: 100, nome: "Band-aid Transparente 10un", precoOld: 12.00, preco: 8.50, img: "img/bandaid.png" },
+                { id: 101, nome: "Alcool Gel 70% 500ml", precoOld: 15.00, preco: 9.90, img: "img/epocler.png" }
+            ];
+
+            const favoritos = [
+                { id: 1, nome: "Dorflex 10 Comprimidos", preco: 15.90, img: "img/dorflex.png" },
+                { id: 2, nome: "Neosaldina 30 Drágeas", preco: 19.50, img: "img/neosaldina.png" },
+                { id: 13, nome: "Buscopan Composto 20 Drg", preco: 16.00, img: "img/buscopan.png" },
+                { id: 18, nome: "Nebacetin Pomada 15g", preco: 19.00, img: "img/nebacetin.png" },
+                { id: 15, nome: "Luftal Gotas 15ml", preco: 19.00, img: "img/luftal.png" },
+                { id: 5, nome: "Paracetamol 750mg", preco: 8.00, img: "img/paracetamol.png" }
+            ];
+
+            function renderHScroll(containerId, list, hasPromo) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = list.map(p => `
+                    <div class="h-card">
+                        <img src="${p.img}" class="h-img" onerror="this.src='https://placehold.co/50'">
+                        <div class="h-name">${p.nome}</div>
+                        ${hasPromo ? `<div class="price-old">R$ ${p.precoOld.toFixed(2).replace('.',',')}</div>` : ''}
+                        <div class="price-new">R$ ${p.preco.toFixed(2).replace('.',',')}</div>
+                        <button class="btn-h-add" onclick="addItemDirect(${p.id}, '${containerId}')">Adicionar</button>
+                    </div>
+                `).join('');
+                
+                // Ativa a função de arrastar para este container específico
+                enableDrag(containerId);
+            }
+
+            // FUNÇÃO PARA ATIVAR O ARRASTAR COM O MOUSE
+            function enableDrag(containerId) {
+                const slider = document.getElementById(containerId);
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                slider.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    slider.classList.add('active');
+                    startX = e.pageX - slider.offsetLeft;
+                    scrollLeft = slider.scrollLeft;
+                });
+                slider.addEventListener('mouseleave', () => {
+                    isDown = false;
+                });
+                slider.addEventListener('mouseup', () => {
+                    isDown = false;
+                });
+                slider.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - slider.offsetLeft;
+                    const walk = (x - startX) * 2; // multiplicador de velocidade
+                    slider.scrollLeft = scrollLeft - walk;
+                });
+            }
+
+            window.addItemDirect = function(id, source) {
+                const list = (source === 'upsellContainer') ? promos : favoritos;
+                const p = list.find(item => item.id === id);
+                let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+                const existing = cart.find(item => item.id === id);
+                if (existing) existing.qty++; else cart.push({ ...p, qty: 1 });
+                localStorage.setItem(CART_KEY, JSON.stringify(cart));
+                renderizarCarrinho();
+            }
+
+            function renderizarCarrinho() {
+                const container = document.getElementById('cartListContainer');
+                const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+                const wrapper = document.getElementById('cartContentWrapper');
+                const emptyView = document.getElementById('emptyCartState');
+                const btnClear = document.getElementById('btnClearCart');
+
+                if (cart.length === 0) {
+                    wrapper.style.display = 'none';
+                    emptyView.style.display = 'flex';
+                    btnClear.style.visibility = 'hidden';
+                    document.getElementById('totalValueDisplay').textContent = 'R$ 0,00';
+                    document.getElementById('totalItemsCount').textContent = '0 produtos';
+                    return;
+                }
+
+                wrapper.style.display = 'block';
+                emptyView.style.display = 'none';
+                btnClear.style.visibility = 'visible';
+                container.innerHTML = '';
+                let totalGeral = 0, totalItens = 0;
+
+                cart.forEach((p, index) => {
+                    const subtotal = p.preco * p.qty;
+                    totalGeral += subtotal;
+                    totalItens += p.qty;
+                    const div = document.createElement('div');
+                    div.className = 'cart-item';
+                    div.innerHTML = `
+                        <div class="cart-item-left">
+                            <div class="cart-item-img-container"><img src="${p.img}" class="cart-item-img" onerror="this.src='https://placehold.co/60'"></div>
+                            <div class="item-details">
+                                <div class="item-name">${p.nome}</div>
+                                <div class="item-vendor-small">vendido e entregue pela 1234farma</div>
+                                <div class="item-price-total">R$ ${subtotal.toFixed(2).replace('.',',')}</div>
+                            </div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="btn-qty btn-decrease" onclick="mudarQtd(${index}, -1)">-</button>
+                            <span class="qty-display">${p.qty}</span>
+                            <button class="btn-qty btn-increase" onclick="mudarQtd(${index}, 1)">+</button>
+                        </div>`;
+                    container.appendChild(div);
+                });
+
+                document.getElementById('totalValueDisplay').textContent = 'R$ ' + totalGeral.toFixed(2).replace('.',',');
+                document.getElementById('totalItemsCount').textContent = `${totalItens} produtos`;
+            }
+
+            window.mudarQtd = (index, delta) => {
+                let cart = JSON.parse(localStorage.getItem(CART_KEY));
+                cart[index].qty += delta;
+                if (cart[index].qty <= 0) cart.splice(index, 1);
+                localStorage.setItem(CART_KEY, JSON.stringify(cart));
+                renderizarCarrinho();
+            };
+
+            document.getElementById('couponBar').onclick = () => {
+                const area = document.getElementById('couponInputArea');
+                area.style.display = (area.style.display === 'block') ? 'none' : 'block';
+            };
+
+            document.getElementById('btnFinalizar').onclick = () => {
+                const user = sessionStorage.getItem('usuarioFarmaFacil');
+                if (!user) {
+                    alert("Por favor, faça login para finalizar o pedido.");
+                    window.location.href = 'login_mobile.html';
+                } else {
+                    window.location.href = 'metodopagamento_mobile.html';
+                }
+            };
+
+            renderHScroll('upsellContainer', promos, true);
+            renderHScroll('favoritesContainer', favoritos, false);
+            
+            document.getElementById('btnClearCart').onclick = () => document.getElementById('confirmModal').style.display = 'flex';
+            document.getElementById('btnCancelClear').onclick = () => document.getElementById('confirmModal').style.display = 'none';
+            document.getElementById('btnConfirmClear').onclick = () => { localStorage.removeItem(CART_KEY); renderizarCarrinho(); document.getElementById('confirmModal').style.display = 'none'; };
+
+            renderizarCarrinho();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1234Farma - Loja Mobile</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root { 
+            --tech-purple: #2E1A47;
+            --neon-mint: #00D284;
+            --page-bg: #FFFFFF;       
+            --element-bg: #E9ECEF;    
+            --card-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            --warning-red: #ff4757; 
+            --story-border: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; user-select: none; }
+        
+        body { background-color: var(--page-bg); color: var(--tech-purple); height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* === HEADER FIXO === */
+        .fixed-top-section {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background-color: var(--page-bg); z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); height: 210px; 
+        }
+        
+        header { padding: 35px 15px 5px 15px; display: flex; justify-content: center; align-items: center; position: relative; }
+        .brand-logo { font-size: 1.5rem; font-weight: 900; letter-spacing: -1px; }
+        .brand-1234 { color: var(--neon-mint); }
+        .brand-farma { color: var(--tech-purple); }
+
+        .header-icon-left { position: absolute; left: 15px; top: 40px; color: var(--tech-purple); cursor: pointer; }
+        .header-icon-right { position: absolute; right: 15px; top: 40px; color: var(--tech-purple); cursor: pointer; }
+        .cart-badge { position: absolute; top: -5px; right: -8px; background-color: var(--warning-red); color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 10px; border: 2px solid var(--page-bg); }
+
+        .user-greeting { width: 100%; font-size: 0.85rem; font-weight: 600; color: #888; text-align: center; margin-bottom: 8px; }
+
+        .search-bar-wrapper { padding: 0 15px; margin-bottom: 18px; }
+        .search-input { width: 100%; padding: 8px 35px; border-radius: 20px; background-color: var(--element-bg); font-size: 0.9rem; height: 38px; display: flex; align-items: center; position: relative; }
+        .search-icon-span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 1.1rem; opacity: 0.5; }
+
+        .category-scroll-container { display: flex; gap: 8px; overflow-x: auto; padding: 0 15px 15px 15px; scrollbar-width: none; -ms-overflow-style: none; cursor: grab; }
+        .category-scroll-container::-webkit-scrollbar { display: none; }
+        .category-chip { padding: 7px 15px; border-radius: 20px; background-color: var(--element-bg); color: var(--tech-purple); font-size: 0.75rem; font-weight: 600; flex-shrink: 0; transition: 0.2s; }
+        .category-chip.active { background-color: var(--tech-purple); color: var(--neon-mint); }
+
+        main { flex-grow: 1; overflow-y: scroll; padding-top: 210px; padding-bottom: 80px; scrollbar-width: none; }
+        main::-webkit-scrollbar { display: none; }
+
+        /* === BANNER STATUS MÁQUINA === */
+        .machine-status-banner {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px; 
+        }
+        .status-alert { background-color: #fff2f2; color: var(--warning-red); border-bottom: 1px solid var(--warning-red); }
+        .status-ok { background-color: #f8f9fa; color: var(--tech-purple); border-bottom: 1px solid #eee; }
+        .status-ok .material-icons { color: var(--neon-mint); }
+        .machine-info-text { display: flex; flex-direction: column; gap: 2px; }
+        .machine-address-sub { font-size: 0.65rem; color: #666; font-weight: 500; }
+
+        @keyframes pulse-red {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        .pulse { animation: pulse-red 1.5s infinite; }
+
+        /* === PROPAGANDAS === */
+        .promo-section { width: 100%; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        .promo-carousel-wrapper { width: 100%; height: 155px; position: relative; padding: 0 15px; }
+        .promo-slide { border-radius: 20px; height: 100%; width: calc(100% - 30px); position: absolute; overflow: hidden; display: flex; align-items: center; padding: 20px; opacity: 0; transition: opacity 0.8s ease-in-out; z-index: 1; }
+        .promo-slide.active { opacity: 1; z-index: 2; }
+        .promo-slide.slide-1 { background: linear-gradient(135deg, var(--tech-purple) 0%, #3d2a58 100%); }
+        .promo-slide.slide-2 { background: linear-gradient(135deg, #1a0f2e 0%, var(--tech-purple) 100%); }
+        .promo-slide.slide-3 { background: linear-gradient(135deg, var(--tech-purple) 0%, #150b24 100%); }
+        .promo-slide.slide-4 { background: linear-gradient(135deg, #000000 0%, #2E1A47 100%); }
+        .promo-shape { position: absolute; top: 0; right: 0; width: 45%; height: 100%; background-color: var(--neon-mint); border-top-left-radius: 90px; border-bottom-left-radius: 40px; z-index: 1; opacity: 0.9; }
+        .promo-content { position: relative; z-index: 2; width: 65%; color: white; }
+        .promo-text { font-size: 0.95rem; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+        .promo-highlight { color: var(--neon-mint); }
+        .promo-btn-visual { display: inline-block; padding: 4px 10px; background-color: rgba(255,255,255,0.2); border-radius: 10px; font-size: 0.6rem; font-weight: 600; text-transform: uppercase; }
+        .promo-image { position: absolute; bottom: 0; right: 0; height: 90%; z-index: 3; object-fit: contain;}
+        .promo-pagination-external { display: flex; justify-content: center; gap: 8px; margin: 12px 0; }
+        .promo-dot { width: 8px; height: 8px; border-radius: 50%; background: #DDD; transition: all 0.4s ease; }
+        .promo-dot.active { background: var(--tech-purple); width: 22px; border-radius: 5px; }
+
+        /* === STORIES === */
+        .stories-section { display: flex; gap: 15px; overflow-x: auto; padding: 5px 15px 15px 15px; scrollbar-width: none; -ms-overflow-style: none; cursor: grab; }
+        .stories-section::-webkit-scrollbar { display: none; }
+        .story-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; }
+        .story-ring { width: 68px; height: 68px; border-radius: 50%; padding: 3px; background: var(--story-border); display: flex; align-items: center; justify-content: center; }
+        .story-thumb { width: 100%; height: 100%; border-radius: 50%; background: white; border: 2px solid white; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .story-thumb .material-icons { font-size: 1.8rem; color: var(--tech-purple); }
+        .story-name { font-size: 0.65rem; font-weight: 700; color: #555; }
+
+        /* === CARDS LOGIN === */
+        .login-call-card { margin: 10px 15px 20px 15px; background: #f8f9fa; border-radius: 20px; padding: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px dashed var(--tech-purple); }
+        .login-call-card-text h4 { font-size: 0.9rem; font-weight: 800; color: var(--tech-purple); }
+        .login-call-card-text p { font-size: 0.75rem; color: #666; }
+        .btn-login-action { background-color: var(--tech-purple); color: var(--neon-mint); border: none; padding: 8px 12px; border-radius: 10px; font-weight: 800; font-size: 0.65rem; cursor: pointer; }
+
+        .login-call-card-bottom { margin: 20px 15px; background: var(--tech-purple); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; box-shadow: 0 10px 20px rgba(46, 26, 71, 0.2); }
+        .login-call-card-bottom h4 { font-size: 1rem; font-weight: 800; color: #FFF; }
+        .login-call-card-bottom p { font-size: 0.8rem; color: rgba(255,255,255,0.7); line-height: 1.4; }
+        .btn-login-action-bottom { background-color: var(--neon-mint); color: var(--tech-purple); border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 900; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* === PRODUTOS === */
+        .product-area { padding: 0 15px 10px 15px; }
+        .section-title { font-size: 0.95rem; margin-bottom: 12px; font-weight: 800; border-left: 3px solid var(--neon-mint); padding-left: 8px; color: var(--tech-purple); }
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .product-card { background-color: var(--element-bg); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: var(--card-shadow); padding-bottom: 10px; border: 1px solid #e0e0e0; cursor: pointer; }
+        .btn-fav { position: absolute; top: 8px; left: 8px; z-index: 5; color: #ccc; cursor: pointer; font-size: 1.1rem; }
+        .btn-fav.active { color: var(--warning-red); }
+        .product-img-container { width: 100%; height: 110px; background: white; display: flex; justify-content: center; align-items: center; }
+        .product-img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+        .product-info-wrapper { padding: 8px 10px 0 10px; }
+        .product-title { font-size: 0.85rem; font-weight: 700; color: var(--tech-purple); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-lab-info { font-size: 0.65rem; color: #888; margin-bottom: 2px; }
+        
+        .price-container { display: flex; flex-direction: column; margin-top: 2px; }
+        .price-old { font-size: 0.6rem; color: #999; text-decoration: line-through; }
+        .product-price { font-size: 0.95rem; font-weight: 800; color: var(--tech-purple); }
+        
+        .btn-add { 
+            width: 28px; height: 28px; border-radius: 50%; border: none; 
+            background: var(--neon-mint); color: white; position: absolute; 
+            bottom: 8px; right: 8px; display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-add.added { background: var(--tech-purple); transform: scale(1.1); }
+        .btn-add .material-icons { font-size: 1rem; }
+
+        /* === MINI PROPAGANDAS === */
+        .promo-section-mini { width: 100%; padding: 15px 0; }
+        .promo-carousel-mini { width: 100%; height: 90px; position: relative; padding: 0 15px; }
+        .promo-slide-mini { border-radius: 15px; height: 100%; width: calc(100% - 30px); position: absolute; overflow: hidden; display: flex; align-items: center; padding: 15px; opacity: 0; transition: 0.8s; }
+        .promo-slide-mini.active { opacity: 1; }
+        .mini-1 { background: linear-gradient(135deg, #4B2C73 0%, var(--tech-purple) 100%); }
+        .mini-2 { background: linear-gradient(135deg, #00D284 0%, #00a368 100%); }
+
+        .best-sellers-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 5px 15px 20px 15px; scrollbar-width: none; cursor: grab; }
+        .best-sellers-scroll::-webkit-scrollbar { display: none; }
+        .best-sellers-scroll .product-card { flex-shrink: 0; width: 150px; }
+
+        .mobile-footer { position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--tech-purple); height: 60px; display: flex; justify-content: space-around; align-items: center; z-index: 500; border-top: 2px solid var(--neon-mint); }
+        .nav-item { color: white; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.55rem; font-weight: 600; opacity: 0.6; }
+        .nav-item.active { color: var(--neon-mint); opacity: 1; }
+        .nav-item .material-icons { font-size: 1.2rem; }
+
+        /* === MODAL DE LOGIN (BOTTOM SHEET) === */
+        .login-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 2000;
+            display: none; align-items: flex-end;
+            backdrop-filter: blur(2px);
+        }
+        .login-modal-overlay.active { display: flex; }
+
+        .login-modal-content {
+            width: 100%; background: white;
+            border-top-left-radius: 30px; border-top-right-radius: 30px;
+            padding: 20px 25px 40px 25px;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            max-height: 90vh; overflow-y: auto;
+        }
+        .login-modal-overlay.active .login-modal-content { transform: translateY(0); }
+
+        .modal-drag-handle { width: 40px; height: 5px; background: #E0E0E0; border-radius: 10px; margin: 0 auto 20px auto; }
+
+        /* MODAL STORIES */
+        .story-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 2000; display: none; flex-direction: column; }
+        .story-progress-container { display: flex; gap: 4px; padding: 10px; position: absolute; top: 0; width: 100%; z-index: 10; }
+        .story-progress-bar { flex: 1; height: 2px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden; }
+        .story-progress-fill { height: 100%; background: white; width: 0%; transition: width linear; }
+        .story-content-view { flex-grow: 1; display: flex; align-items: center; justify-content: center; color: white; position: relative; text-align: center; padding: 40px; }
+        .story-close { position: absolute; top: 25px; right: 15px; color: white; z-index: 20; cursor: pointer; }
+        .story-nav-btn { position: absolute; width: 50%; height: 100%; top: 0; z-index: 5; }
+        .story-nav-left { left: 0; }
+        .story-nav-right { right: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="fixed-top-section">
+        <header>
+            <div class="header-icon-left" onclick="alert('Iniciando chat...')"><span class="material-icons">forum</span></div>
+            <div class="brand-logo"><span class="brand-1234">1234</span><span class="brand-farma">Farma</span></div>
+            <div class="header-icon-right" onclick="window.location.href='carrinho_mobile.html'">
+                <span class="material-icons">shopping_cart</span>
+                <span id="cartBadge" class="cart-badge">0</span>
+            </div>
+        </header>
+        <div class="user-greeting">Olá, <span id="userGreetingName">Visitante</span></div>
+        <div class="search-bar-wrapper">
+            <div class="search-input">
+                <span class="material-icons search-icon-span">search</span>
+                <span>Toque para pesquisar...</span>
+            </div>
+        </div>
+        <nav class="category-scroll-container" id="catNav">
+            <div class="category-chip active" onclick="filterProducts('all', this)">🔥 Todos</div>
+            <div class="category-chip" onclick="filterProducts('dor', this)">💊 Dor</div>
+            <div class="category-chip" onclick="filterProducts('gripe', this)">🤧 Gripe</div>
+            <div class="category-chip" onclick="filterProducts('estomago', this)">🤢 Estômago</div>
+            <div class="category-chip" onclick="filterProducts('socorros', this)">🩹 Socorros</div>
+            <div class="category-chip" onclick="filterProducts('vitaminas', this)">⚡ Vitaminas</div>
+        </nav>
+    </div>
+
+    <main id="mainContent">
+        <div id="machineStatusBanner" class="machine-status-banner status-alert pulse" onclick="window.location.href='selecao_maquina_mobile.html'">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="material-icons" id="machineIcon">error_outline</span>
+                <div class="machine-info-text">
+                    <span id="machineStatusText">SELECIONE UMA UNIDADE PARA COMPRAR</span>
+                    <span id="machineAddressSub" class="machine-address-sub">Toque para ver máquinas próximas</span>
+                </div>
+            </div>
+            <span class="material-icons" style="font-size: 1.2rem; opacity: 0.5;">chevron_right</span>
+        </div>
+
+        <section class="promo-section">
+            <div class="promo-carousel-wrapper">
+                <div class="promo-slide slide-1 active">
+                    <div class="promo-content"><h2 class="promo-text">Economize até <span class="promo-highlight">30%</span> pelo App.</h2><div class="promo-btn-visual">Preço Baixo</div></div>
+                    <div class="promo-shape"></div>
+                    <img src="https://placehold.co/120x150/2E1A47/69FFC2?text=Promo" class="promo-image">
+                </div>
+                <div class="promo-slide slide-2">
+                    <div class="promo-content"><h2 class="promo-text">Genéricos com até <span class="promo-highlight">50% OFF</span>.</h2><div class="promo-btn-visual">Ofertas</div></div>
+                    <div class="promo-shape"></div>
+                    <img src="https://placehold.co/120x150/2E1A47/69FFC2?text=Ofertas" class="promo-image">
+                </div>
+                <div class="promo-slide slide-3">
+                    <div class="promo-content"><h2 class="promo-text">Atendimento com <span class="promo-highlight">farmacêutico</span>.</h2><div class="promo-btn-visual">Ajuda</div></div>
+                    <div class="promo-shape"></div>
+                    <img src="https://placehold.co/120x150/2E1A47/69FFC2?text=Ajuda" class="promo-image">
+                </div>
+                <div class="promo-slide slide-4">
+                    <div class="promo-content"><h2 class="promo-text">Tecnologia <span class="promo-highlight">1234Farma</span>.</h2><div class="promo-btn-visual">Tech</div></div>
+                    <div class="promo-shape"></div>
+                    <img src="https://placehold.co/120x150/2E1A47/69FFC2?text=Tech" class="promo-image">
+                </div>
+            </div>
+            <div class="promo-pagination-external" id="promoDots"></div>
+        </section>
+
+        <section class="stories-section" id="storiesNav">
+            <div class="story-item" onclick="openStory(0)"><div class="story-ring"><div class="story-thumb"><span class="material-icons">bolt</span></div></div><span class="story-name">Ofertas</span></div>
+            <div class="story-item" onclick="openStory(1)"><div class="story-ring"><div class="story-thumb"><span class="material-icons">campaign</span></div></div><span class="story-name">Avisos</span></div>
+            <div class="story-item" onclick="openStory(2)"><div class="story-ring"><div class="story-thumb"><span class="material-icons">handshake</span></div></div><span class="story-name">Parceiros</span></div>
+            <div class="story-item" onclick="openStory(3)"><div class="story-ring"><div class="story-thumb"><span class="material-icons">card_giftcard</span></div></div><span class="story-name">Brindes</span></div>
+            <div class="story-item" onclick="openStory(4)"><div class="story-ring"><div class="story-thumb"><span class="material-icons">new_releases</span></div></div><span class="story-name">Novidades</span></div>
+            <div class="story-item" onclick="openStory(5)"><div class="story-ring"><div class="story-thumb"><span class="material-icons">location_on</span></div></div><span class="story-name">Lojas</span></div>
+            <div class="story-item" onclick="openStory(6)"><div class="story-ring"><div class="story-thumb"><span class="material-icons">star</span></div></div><span class="story-name">VIP</span></div>
+            <div class="story-item" onclick="openStory(7)"><div class="story-ring"><div class="story-thumb"><span class="material-icons">help</span></div></div><span class="story-name">Ajuda</span></div>
+        </section>
+
+        <div class="login-call-card">
+            <div class="login-call-card-text"><h4>Sua conta Farma</h4><p>Entre ou cadastre-se para comprar.</p></div>
+            <button class="btn-login-action" onclick="openLoginModal()">ENTRAR / CADASTRAR</button>
+        </div>
+
+        <section class="product-area">
+            <div class="section-title" id="sectionTitle">Todos os Produtos</div>
+            <div class="product-grid" id="productsContainer"></div>
+        </section>
+
+        <section class="promo-section-mini">
+            <div class="promo-carousel-mini">
+                <div class="promo-slide-mini mini-1 active"><div style="color:white; padding:15px;"><p style="font-weight:800; font-size:0.8rem;">⚡ OFERTA RELÂMPAGO</p><p style="font-size:0.7rem;">Vitaminas com 40% OFF</p></div></div>
+                <div class="promo-slide-mini mini-2"><div style="color:white; padding:15px;"><p style="font-weight:800; font-size:0.8rem;">🎁 FIDELIDADE</p><p style="font-size:0.7rem;">Acumule pontos hoje</p></div></div>
+            </div>
+            <div class="promo-pagination-external" id="miniDots"></div>
+        </section>
+
+        <div class="product-area">
+            <div class="section-title">Mais Comprados</div>
+        </div>
+        <div class="best-sellers-scroll" id="bestSellersScroll"></div>
+
+        <div class="login-call-card-bottom">
+            <h4>Falta pouco para finalizar!</h4>
+            <p>Faça login agora para aproveitar descontos exclusivos e finalizar seu pedido com segurança.</p>
+            <button class="btn-login-action-bottom" onclick="openLoginModal()">Acessar Minha Conta</button>
+        </div>
+    </main>
+
+    <div id="loginModal" class="login-modal-overlay" onclick="closeLoginModal()">
+        <div class="login-modal-content" onclick="event.stopPropagation()">
+            <div class="modal-drag-handle"></div>
+            <div id="loginContentArea"></div>
+        </div>
+    </div>
+
+    <div class="story-modal" id="storyModal">
+        <div class="story-progress-container" id="storyBars"></div>
+        <span class="material-icons story-close" onclick="closeStory()">close</span>
+        <div class="story-nav-btn story-nav-left" onclick="prevStory()"></div>
+        <div class="story-nav-btn story-nav-right" onclick="nextStory()"></div>
+        <div class="story-content-view" id="storyContentView"></div>
+    </div>
+
+    <nav class="mobile-footer">
+        <a href="loja_mobile.html" class="nav-item active"><span class="material-icons">store</span><span>LOJA</span></a>
+        <a href="pedidos_mobile.html" class="nav-item"><span class="material-icons">assignment</span><span>PEDIDOS</span></a>
+        <a href="ofertas_mobile.html" class="nav-item"><span class="material-icons">local_offer</span><span>OFERTAS</span></a>
+        <a href="#" class="nav-item"><span class="material-icons">favorite</span><span>FAVORITOS</span></a>
+        <a href="#" class="nav-item"><span class="material-icons">person</span><span>PERFIL</span></a>
+    </nav>
+
+    <script>
+        // Lógica de abertura do Modal de Login tornada GLOBAL
+        window.openLoginModal = function() {
+            fetch('login_mobile.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('loginContentArea').innerHTML = data;
+                    document.getElementById('loginModal').classList.add('active');
+                    // Bloqueio do scroll do body
+                    document.body.style.overflow = 'hidden';
+                });
+        }
+
+        // Função GLOBAL para trocar conteúdo dentro do modal sem fechar
+        window.trocarConteudoModal = function(arquivo) {
+            fetch(arquivo)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('loginContentArea').innerHTML = data;
+                });
+        }
+
+        window.closeLoginModal = function() {
+            document.getElementById('loginModal').classList.remove('active');
+            
+            // CORREÇÃO DEFINITIVA DO BUG DE TELA MENOR:
+            // Removemos o overflow e forçamos o scroll a ser 'auto'
+            document.body.style.overflow = 'auto';
+            
+            // Força o navegador a recalcular a altura real da viewport mobile
+            // disparando um evento de resize ou simplesmente limpando estilos inline
+            document.body.style.removeProperty('height');
+            document.body.style.removeProperty('width');
+            
+            // Pequeno delay para garantir que a transição do modal termine antes do reset total
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 300);
+        }
+
+        const produtos = [
+            { id: 1, nome: "Dorflex", dose: "500mg", pack: "10 Comp.", preco: 15.90, precoLoja: 22.00, img: "img/dorflex.png", cat: "dor" },
+            { id: 2, nome: "Neosaldina", dose: "30 drágeas", pack: "Caixa", preco: 19.50, precoLoja: 28.00, img: "img/neosaldina.png", cat: "dor" },
+            { id: 3, nome: "Torsilax", dose: "Genérico", pack: "30 Comp.", preco: 12.00, precoLoja: 18.50, img: "img/torsilax.png", cat: "dor" },
+            { id: 4, nome: "Advil", dose: "400mg", pack: "Cápsula", preco: 25.00, precoLoja: 35.00, img: "img/advil.png", cat: "dor" },
+            { id: 5, nome: "Paracetamol", dose: "750mg", pack: "20 Comp.", preco: 8.00, precoLoja: 12.00, img: "img/paracetamol.png", cat: "dor" },
+            { id: 6, nome: "Benegrip", dose: "Dia/Noite", pack: "6 Comp.", preco: 21.00, precoLoja: 29.00, img: "img/benegrip.png", cat: "gripe" },
+            { id: 7, nome: "Cimegripe", dose: "400mg", pack: "20 Cáps.", preco: 14.00, precoLoja: 19.00, img: "img/cimegripe.png", cat: "gripe" },
+            { id: 8, nome: "Vick Vaporub", dose: "12g", pack: "Pote", preco: 28.00, precoLoja: 38.00, img: "img/vick.png", cat: "gripe" },
+            { id: 9, nome: "Vitamina C", dose: "1g", pack: "10 Eferv.", preco: 11.00, precoLoja: 16.00, img: "img/vitamina_c.png", cat: "vitaminas" },
+            { id: 10, nome: "Allegra", dose: "120mg", pack: "10 Comp.", preco: 45.00, precoLoja: 58.00, img: "img/allegra.png", cat: "gripe" },
+            { id: 11, nome: "Polaramine", dose: "2mg", pack: "20 Comp.", preco: 18.00, precoLoja: 25.00, img: "img/polaramine.png", cat: "gripe" },
+            { id: 12, nome: "Eno", dose: "5g", pack: "2 Sachês", preco: 4.50, precoLoja: 7.00, img: "img/eno.png", cat: "estomago" },
+            { id: 13, nome: "Buscopan", dose: "10mg", pack: "20 Drágeas", preco: 16.00, precoLoja: 24.00, img: "img/buscopan.png", cat: "estomago" },
+            { id: 14, nome: "Omeprazol", dose: "20mg", pack: "28 Cáps.", preco: 22.00, precoLoja: 32.00, img: "img/omeprazol.png", cat: "estomago" },
+            { id: 15, nome: "Luftal", dose: "125mg", pack: "Cápsula", preco: 19.00, precoLoja: 26.00, img: "img/luftal.png", cat: "estomago" },
+            { id: 16, nome: "Centrum", dose: "A-Z", pack: "30 Comp.", preco: 85.00, precoLoja: 110.00, img: "img/centrum.png", cat: "vitaminas" },
+            { id: 17, nome: "Epocler", dose: "10ml", pack: "Flaconete", preco: 3.50, precoLoja: 6.00, img: "img/epocler.png", cat: "estomago" },
+            { id: 18, nome: "Nebacetin", dose: "15g", pack: "Bisnaga", preco: 19.00, precoLoja: 28.00, img: "img/nebacetin.png", cat: "socorros" },
+            { id: 19, nome: "Merthiolate", dose: "Spray", pack: "45ml", preco: 24.00, precoLoja: 32.00, img: "img/merthiolate.png", cat: "socorros" },
+            { id: 20, nome: "Band-aid", dose: "Padrão", pack: "10 Un.", preco: 7.00, precoLoja: 12.00, img: "img/bandaid.png", cat: "socorros" }
+        ];
+
+        const storyData = [
+            { title: "Ofertas Relâmpago", text: "Analgésicos com 30% OFF hoje!", color: "#2E1A47" },
+            { title: "Aviso Importante", text: "Pagamento por aproximação liberado!", color: "#00D284" },
+            { title: "Parceria Unimed", text: "Clientes com descontos exclusivos!", color: "#4B2C73" },
+            { title: "Brindes", text: "Porta comprimidos grátis em combos!", color: "#ff4757" },
+            { title: "Novidades", text: "Conheça a linha Solar 1234!", color: "#ff9800" },
+            { title: "Lojas", text: "Estamos em 15 novos pontos!", color: "#00bcd4" },
+            { title: "VIP", text: "Receba ofertas no seu Whats!", color: "#673ab7" },
+            { title: "Ajuda", text: "Farmacêutico 24h para você!", color: "#3f51b5" }
+        ];
+
+        let currentStoryIndex = 0; let storyTimer;
+
+        function updateMachineBanner() {
+            const banner = document.getElementById('machineStatusBanner');
+            const statusText = document.getElementById('machineStatusText');
+            const subText = document.getElementById('machineAddressSub');
+            const icon = document.getElementById('machineIcon');
+            const machine = JSON.parse(localStorage.getItem('selected_machine'));
+
+            if (machine) {
+                banner.classList.remove('status-alert', 'pulse');
+                banner.classList.add('status-ok');
+                icon.innerText = "location_on";
+                statusText.innerHTML = `RETIRADA NA <strong>MÁQUINA ${machine.id}</strong>`;
+                subText.innerText = machine.address;
+            } else {
+                banner.classList.add('status-alert', 'pulse');
+                banner.classList.remove('status-ok');
+                icon.innerText = "error_outline";
+                statusText.innerText = "SELECIONE UMA UNIDADE PARA COMPRAR";
+                subText.innerText = "Toque para ver máquinas próximas";
+            }
+        }
+
+        function openStory(index) {
+            currentStoryIndex = index;
+            document.getElementById('storyModal').style.display = 'flex';
+            renderStoryBars();
+            showStory();
+        }
+
+        function renderStoryBars() {
+            document.getElementById('storyBars').innerHTML = storyData.map((_, i) => `<div class="story-progress-bar"><div class="story-progress-fill" id="fill-${i}"></div></div>`).join('');
+        }
+
+        function showStory() {
+            clearTimeout(storyTimer);
+            const data = storyData[currentStoryIndex];
+            const content = document.getElementById('storyContentView');
+            content.style.backgroundColor = data.color;
+            content.innerHTML = `<div><h1 style="font-size:2rem; margin-bottom:20px">${data.title}</h1><p style="font-size:1.2rem">${data.text}</p></div>`;
+            
+            storyData.forEach((_, i) => {
+                const fill = document.getElementById(`fill-${i}`);
+                fill.style.transition = 'none';
+                fill.style.width = i < currentStoryIndex ? '100%' : '0%';
+            });
+
+            setTimeout(() => {
+                const fill = document.getElementById(`fill-${currentStoryIndex}`);
+                fill.style.transition = 'width 5s linear';
+                fill.style.width = '100%';
+            }, 50);
+
+            storyTimer = setTimeout(nextStory, 5000);
+        }
+
+        function nextStory() {
+            if (currentStoryIndex < storyData.length - 1) { currentStoryIndex++; showStory(); } 
+            else { closeStory(); }
+        }
+
+        function prevStory() {
+            if (currentStoryIndex > 0) { currentStoryIndex--; showStory(); }
+        }
+
+        function closeStory() { 
+            clearTimeout(storyTimer); 
+            document.getElementById('storyModal').style.display = 'none'; 
+        }
+
+        function addToCart(id, btn) {
+            const machine = JSON.parse(localStorage.getItem('selected_machine'));
+            if (!machine) {
+                alert("Por favor, selecione uma máquina antes de adicionar ao carrinho.");
+                window.location.href = 'selecao_maquina_mobile.html';
+                return;
+            }
+
+            const product = produtos.find(p => p.id === id);
+            let cart = JSON.parse(localStorage.getItem('cart_mobile')) || [];
+            const existing = cart.find(item => item.id === id);
+            if (existing) existing.qty++; else cart.push({ ...product, qty: 1 });
+            localStorage.setItem('cart_mobile', JSON.stringify(cart));
+            updateCartBadge();
+            btn.classList.add('added');
+            const icon = btn.querySelector('.material-icons');
+            icon.textContent = 'check';
+            setTimeout(() => { btn.classList.remove('added'); icon.textContent = 'add'; }, 600);
+        }
+
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('cart_mobile')) || [];
+            document.getElementById('cartBadge').textContent = cart.reduce((acc, i) => acc + i.qty, 0);
+        }
+
+        function createCard(p) {
+            return `<div class="product-card" onclick="window.location.href='produto_detalhes_mobile.html?id=${p.id}'">
+                <span class="material-icons btn-fav" onclick="event.stopPropagation(); this.classList.toggle('active')">favorite</span>
+                <div class="product-img-container"><img src="${p.img}" class="product-img" onerror="this.src='https://placehold.co/120'"></div>
+                <div class="product-info-wrapper">
+                    <h3 class="product-title">${p.nome}</h3>
+                    <p class="product-lab-info">${p.dose} • ${p.pack}</p>
+                    <div class="price-container">
+                        <span class="price-old">R$ ${p.precoLoja.toFixed(2).replace('.',',')}</span>
+                        <span class="product-price">R$ ${p.preco.toFixed(2).replace('.',',')}</span>
+                    </div>
+                </div>
+                <button class="btn-add" onclick="event.stopPropagation(); addToCart(${p.id}, this)"><span class="material-icons">add</span></button>
+            </div>`;
+        }
+
+        function render(items, containerId) {
+            const el = document.getElementById(containerId);
+            if(el) el.innerHTML = items.map(p => createCard(p)).join('');
+        }
+
+        window.filterProducts = (cat, element) => {
+            document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+            const filtered = cat === 'all' ? produtos : produtos.filter(p => p.cat === cat);
+            render(filtered, 'productsContainer');
+            document.getElementById('sectionTitle').textContent = element.textContent.replace(/[^\w\s]/gi, '').trim();
+        };
+
+        function enableDrag(id) {
+            const el = document.getElementById(id); if(!el) return;
+            let isDown = false, startX, scrollLeft;
+            el.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - el.offsetLeft; scrollLeft = el.scrollLeft; el.style.cursor='grabbing'; });
+            el.addEventListener('mouseleave', () => isDown = false);
+            el.addEventListener('mouseup', () => isDown = false);
+            el.addEventListener('mousemove', (e) => { if(!isDown) return; e.preventDefault(); const x = e.pageX - el.offsetLeft; el.scrollLeft = scrollLeft - (x - startX) * 2; });
+        }
+
+        function startCarousel(slideClass, dotClass) {
+            let cur = 0; const slides = document.querySelectorAll(slideClass); const dotCont = document.querySelector(dotClass);
+            if(!dotCont) return;
+            slides.forEach((_, i) => { const d = document.createElement('span'); d.className = `promo-dot ${i === 0 ? 'active' : ''}`; dotCont.appendChild(d); });
+            const dots = dotCont.querySelectorAll('.promo-dot');
+            setInterval(() => { if(!slides[cur]) return; slides[cur].classList.remove('active'); dots[cur].classList.remove('active'); cur = (cur + 1) % slides.length; slides[cur].classList.add('active'); dots[cur].classList.add('active'); }, 5000);
+        }
+
+        window.onload = () => {
+            enableDrag('catNav'); enableDrag('storiesNav'); enableDrag('bestSellersScroll');
+            startCarousel('.promo-slide', '#promoDots'); startCarousel('.promo-slide-mini', '#miniDots');
+            render(produtos, 'productsContainer'); render(produtos.slice(0, 8), 'bestSellersScroll');
+            updateCartBadge();
+            updateMachineBanner();
+            
+            const user = sessionStorage.getItem('usuarioFarmaFacil');
+            if (user) document.getElementById('userGreetingName').innerText = user.split(' ')[0];
+        };
+        
+        document.querySelector('.story-nav-left')?.addEventListener('click', prevStory);
+        document.querySelector('.story-nav-right')?.addEventListener('click', nextStory);
+    </script>
+</body>
+</html>

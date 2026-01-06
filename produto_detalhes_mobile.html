@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1234Farma - Detalhes do Produto</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root { 
+            --tech-purple: #2E1A47;
+            --neon-mint: #00D284;
+            --page-bg: #FFFFFF;       
+            --soft-gray: #F8F9FA;
+            --warning-red: #ff4757;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            --text-gray: #666;
+        }
+
+        /* AJUSTE: OCULTAR BARRA DE ROLAGEM */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE e Edge */
+        }
+        *::-webkit-scrollbar { display: none; } /* Chrome, Safari e Opera */
+
+        body { background-color: var(--page-bg); color: var(--tech-purple); padding-bottom: 100px; overflow-x: hidden; }
+
+        header {
+            padding: 45px 20px 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: fixed; top: 0; width: 100%; background: white; z-index: 100;
+            border-bottom: 1px solid #eee;
+        }
+        .header-actions { display: flex; gap: 15px; }
+        .btn-fav.active { color: var(--warning-red); }
+
+        .product-header-info { margin-top: 95px; padding: 20px; }
+        .product-title { font-size: 1.25rem; font-weight: 800; line-height: 1.3; margin-bottom: 5px; }
+        .product-spec { font-size: 0.85rem; color: var(--text-gray); font-weight: 600; }
+
+        .image-container { text-align: center; padding: 20px 0; background: white; }
+        .product-img { width: 220px; height: 220px; object-fit: contain; }
+        .vendor-info { font-size: 0.7rem; color: #aaa; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 10px; }
+
+        .tabs-nav {
+            display: flex; background: white; border-bottom: 1px solid #eee;
+            position: sticky; top: 85px; z-index: 90;
+        }
+        .tab-btn {
+            flex: 1; text-align: center; padding: 15px 0;
+            font-size: 0.85rem; font-weight: 800; color: #aaa;
+            cursor: pointer; position: relative;
+        }
+        .tab-btn.active { color: var(--tech-purple); }
+        .tab-btn.active::after {
+            content: ''; position: absolute; bottom: 0; left: 20%; width: 60%;
+            height: 3px; background: var(--neon-mint); border-radius: 10px;
+        }
+
+        .tab-content { padding: 25px 20px; display: none; }
+        .tab-content.active { display: block; }
+
+        .price-box { background: var(--soft-gray); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+        .price-label { font-size: 0.7rem; color: #888; font-weight: 700; margin-bottom: 5px; }
+        .old-price { font-size: 1rem; color: #999; text-decoration: line-through; }
+        .new-price { font-size: 1.8rem; font-weight: 900; color: var(--tech-purple); display: flex; align-items: center; gap: 10px; }
+        .off-tag { background: var(--warning-red); color: white; font-size: 0.75rem; padding: 4px 8px; border-radius: 8px; font-weight: 900; }
+        .stock-info { display: flex; align-items: center; gap: 8px; margin-top: 15px; color: #008A5B; font-size: 0.8rem; font-weight: 800; }
+
+        .bula-warning { background: #fff5f5; border-radius: 12px; padding: 15px; display: flex; gap: 10px; margin-bottom: 20px; }
+        
+        .faq-card { border: 1px solid #e0e0e0; border-radius: 15px; margin-bottom: 12px; overflow: hidden; transition: 0.3s; }
+        .faq-q { padding: 18px 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: white; }
+        .faq-q span { font-size: 0.9rem; font-weight: 700; color: #333; padding-right: 10px; }
+        .faq-a { max-height: 0; overflow: hidden; padding: 0 15px; font-size: 0.85rem; color: #666; line-height: 1.6; background: #fafafa; }
+        .faq-card.active { border-color: var(--tech-purple); box-shadow: var(--card-shadow); }
+        .faq-card.active .faq-a { max-height: 500px; padding: 15px; border-top: 1px solid #f0f0f0; }
+        .faq-card.active .material-icons { transform: rotate(180deg); color: var(--tech-purple); }
+
+        .buy-footer {
+            position: fixed; bottom: 0; width: 100%; background: white;
+            padding: 10px 10px 25px 10px; border-top: 1px solid #eee;
+            z-index: 110; display: flex; justify-content: center;
+        }
+
+        .btn-buy {
+            width: 95%; padding: 16px; background: var(--neon-mint); color: var(--tech-purple);
+            border: none; border-radius: 14px; font-weight: 900; font-size: 1rem; 
+            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-buy.btn-to-cart { background: var(--tech-purple); color: var(--neon-mint); }
+        .pdf-link { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 25px; color: #888; font-weight: 700; font-size: 0.8rem; text-decoration: none; border: 1.5px dashed #ccc; padding: 15px; border-radius: 12px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <span class="material-icons" onclick="window.history.back()">arrow_back</span>
+        <div class="header-actions">
+            <span class="material-icons">share</span>
+            <span class="material-icons btn-fav" onclick="this.classList.toggle('active')">favorite</span>
+        </div>
+    </header>
+
+    <div class="product-header-info">
+        <h1 class="product-title" id="displayTitle">Antialérgico Allegra Pediátrico</h1>
+        <p class="product-spec" id="displaySpec">Cloridrato de Fexofenadina 6mg/ml • Suspensão Oral 60ml</p>
+    </div>
+
+    <div class="image-container">
+        <img src="img/allegra.png" class="product-img" id="displayImg" onerror="this.src='https://placehold.co/220'">
+        <div class="vendor-info">Vendido e entregue pela 1234Farma</div>
+    </div>
+
+    <nav class="tabs-nav">
+        <div class="tab-btn active" onclick="changeTab(0)">OFERTAS</div>
+        <div class="tab-btn" onclick="changeTab(1)">SOBRE</div>
+        <div class="tab-btn" onclick="changeTab(2)">BULA</div>
+    </nav>
+
+    <div id="tab-0" class="tab-content active">
+        <div class="price-box">
+            <p class="price-label">Preço exclusivo no App e retirando na 1234Smart</p>
+            <p class="old-price">R$ 48,90</p>
+            <div class="new-price">
+                <span>R$ 32,50</span>
+                <span class="off-tag">33% OFF</span>
+            </div>
+            <div class="stock-info">
+                <span class="material-icons" style="font-size: 1.1rem;">check_circle</span>
+                Disponível para retirada imediata na Máquina 22
+            </div>
+        </div>
+        <div style="font-size: 0.85rem; color: #777; line-height: 1.5;">
+            <p>• Validade garantida de no mínimo 6 meses.</p>
+            <p>• Pague via Pix e retire em menos de 1 minuto.</p>
+        </div>
+    </div>
+
+    <div id="tab-1" class="tab-content">
+        <div style="margin-bottom: 20px;">
+            <h4 style="margin-bottom: 8px;">O que é o Allegra Pediátrico?</h4>
+            <p style="font-size: 0.9rem; color: #555; line-height: 1.6;">O Allegra Pediátrico é um anti-histamínico de última geração, desenvolvido para crianças. Ele contém Cloridrato de Fexofenadina, eficaz no bloqueio dos receptores de histamina.</p>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <h4 style="margin-bottom: 8px;">Para que serve e Indicações</h4>
+            <p style="font-size: 0.9rem; color: #555; line-height: 1.6;">Indicado para alívio rápido de rinite alérgica sazonal e urticária. Combate espirros, coriza, prurido nasal e ardor nos olhos.</p>
+        </div>
+        <div>
+            <h4 style="margin-bottom: 8px;">Diferencial: Sem Sono</h4>
+            <p style="font-size: 0.9rem; color: #555; line-height: 1.6;">Não causa sonolência, permitindo que a criança mantenha suas atividades normais sem interferência no aprendizado.</p>
+        </div>
+    </div>
+
+    <div id="tab-2" class="tab-content">
+        <div class="bula-warning">
+            <span class="material-icons" style="color: var(--warning-red);">warning</span>
+            <p style="font-size: 0.8rem; color: #C53030; font-weight: 600;">CUIDADO: A automedicação pode ocultar sintomas de doenças graves. Leia a bula.</p>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+            <div class="faq-q"><span>Para que serve o Allegra Pediátrico e para que é indicado?</span><span class="material-icons">expand_more</span></div>
+            <div class="faq-a">Indicado para o alívio dos sintomas associados à rinite alérgica e urticária idiopática crônica em crianças.</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+            <div class="faq-q"><span>Como devo usar o Allegra Pediátrico?</span><span class="material-icons">expand_more</span></div>
+            <div class="faq-a">A dosagem depende da idade e peso da criança, conforme orientação na tabela da bula inclusa no frasco.</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+            <div class="faq-q"><span>Como o Allegra Pediátrico funciona?</span><span class="material-icons">expand_more</span></div>
+            <div class="faq-a">Ele bloqueia os receptores H1 da histamina, impedindo a ação da substância que causa a alergia no corpo.</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+            <div class="faq-q"><span>Quando o Allegra Pediátrico não deve ser usado?</span><span class="material-icons">expand_more</span></div>
+            <div class="faq-a">Não deve ser usado em caso de hipersensibilidade aos componentes ou em menores de 2 anos (rinite) / 6 meses (urticária).</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+            <div class="faq-q"><span>O que preciso saber antes de usar o Allegra Pediátrico?</span><span class="material-icons">expand_more</span></div>
+            <div class="faq-a">Informe ao médico se a criança possui problemas renais. Não ingerir junto com sucos de frutas.</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+            <div class="faq-q"><span>Quais os efeitos colaterais e as reações do Allegra Pediátrico?</span><span class="material-icons">expand_more</span></div>
+            <div class="faq-a">Pode ocorrer dor de cabeça, tontura, náuseas ou cansaço em casos raros.</div>
+        </div>
+
+        <div class="faq-card" onclick="toggleFaq(this)">
+            <div class="faq-q"><span>Onde, como e por quanto tempo posso guardar o Allegra Pediátrico?</span><span class="material-icons">expand_more</span></div>
+            <div class="faq-a">Conservar em temperatura ambiente (15 a 30°C). Verifique a validade gravada na embalagem.</div>
+        </div>
+
+        <a href="#" class="pdf-link"><span class="material-icons">picture_as_pdf</span> VISUALIZAR BULA COMPLETA EM PDF</a>
+    </div>
+
+    <footer class="buy-footer">
+        <button class="btn-buy" id="btnMainAction" onclick="handleBuyClick()">
+            <span id="btnText">COMPRAR</span>
+            <span class="material-icons" id="btnIcon">shopping_basket</span>
+        </button>
+    </footer>
+
+    <script>
+        function changeTab(i) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn')[i].classList.add('active');
+            document.getElementById('tab-' + i).classList.add('active');
+        }
+
+        function toggleFaq(el) { el.classList.toggle('active'); }
+
+        let cartTimer;
+        function handleBuyClick() {
+            const btn = document.getElementById('btnMainAction');
+            if (btn.classList.contains('btn-to-cart')) {
+                window.location.href = 'carrinho_mobile.html';
+                return;
+            }
+
+            const CART_KEY = 'cart_mobile';
+            const produto = { id: 10, nome: "Allegra Pediátrico 60ml", preco: 32.50, img: 'img/allegra.png', qty: 1 };
+            let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+            const index = cart.findIndex(item => item.id === produto.id);
+            if (index > -1) cart[index].qty += 1; else cart.push(produto);
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+
+            btn.classList.add('btn-to-cart');
+            document.getElementById('btnText').innerText = "IR PARA O CARRINHO";
+            document.getElementById('btnIcon').innerText = "arrow_forward";
+
+            clearTimeout(cartTimer);
+            cartTimer = setTimeout(() => {
+                btn.classList.remove('btn-to-cart');
+                document.getElementById('btnText').innerText = "COMPRAR";
+                document.getElementById('btnIcon').innerText = "shopping_basket";
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

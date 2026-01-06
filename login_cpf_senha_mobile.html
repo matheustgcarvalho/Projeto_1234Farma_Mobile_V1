@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { scrollbar-width: none; -ms-overflow-style: none; box-sizing: border-box; }
+        *::-webkit-scrollbar { display: none; }
+        body { margin: 0; padding: 20px; font-family: 'Segoe UI', Roboto, sans-serif; color: #2E1A47; background-color: #FFFFFF; }
+        .header { display: flex; align-items: center; justify-content: center; position: relative; margin-top: 40px; margin-bottom: 30px; }
+        .btn-back { position: absolute; left: 0; cursor: pointer; padding: 5px; }
+        .brand-logo-small { font-size: 1.8rem; font-weight: 900; }
+        .brand-logo-small .mint { color: #00D284; }
+        .form-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+        .input-group { margin-bottom: 18px; }
+        .input-group label { display: block; font-size: 0.65rem; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; }
+        .input-group input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid #E0E0E0; background: #F8F9FA; font-size: 0.85rem; outline: none; }
+        
+        /* COR DO BOTÃO ALTERADA: Verde com letras Roxas */
+        .btn-submit { 
+            width: 100%; 
+            padding: 14px; 
+            background: #00D284; 
+            color: #2E1A47; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 800; 
+            font-size: 1rem; 
+            cursor: pointer; 
+        }
+
+        .footer-links { margin-top: 40px; text-align: center; display: flex; flex-direction: column; gap: 20px; font-size: 0.9rem; }
+        .link-green { color: #2E1A47; font-weight: 800; border-bottom: 2px solid #00D284; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="material-icons btn-back" onclick="window.history.back()">arrow_back</span>
+        <div class="brand-logo-small"><span class="mint">1234</span>Farma</div>
+    </div>
+
+    <h2 class="form-title">Acesse sua conta</h2>
+    <p style="color:#666; margin-bottom:30px;">Preencha seus dados para continuar.</p>
+
+    <div class="input-group">
+        <label>Seu CPF</label>
+        <input type="tel" placeholder="000.000.000-00">
+    </div>
+
+    <div class="input-group">
+        <label>Sua Senha</label>
+        <input type="password" placeholder="Digite sua senha">
+    </div>
+
+    <button class="btn-submit" onclick="alert('Login realizado!')">CONTINUAR</button>
+
+    <div class="footer-links">
+        <div>Ainda não tem conta? <span class="link-green" onclick="window.location.href='cadastro_mobile.html'">Cadastre-se</span></div>
+        <div style="color:#888; font-weight:600; cursor:pointer;" onclick="window.location.href='loja_mobile.html'">Continuar sem acesso</div>
+    </div>
+</body>
+</html>
