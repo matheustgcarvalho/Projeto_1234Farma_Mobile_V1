@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meu Perfil - 1234Farma</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root { 
+            --tech-purple: #2E1A47;
+            --neon-mint: #00D284;
+            --page-bg: #F8F9FA;       
+            --card-white: #FFFFFF;
+            --text-gray: #7A7A7A;
+            --danger-red: #FF4757;
+        }
+
+        /* RESET E OCULTAR BARRA DE ROLAGEM */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; scrollbar-width: none; }
+        *::-webkit-scrollbar { display: none; }
+        
+        body { background-color: var(--page-bg); color: var(--tech-purple); padding-bottom: 90px; overflow-y: auto; }
+
+        /* === HEADER DESIGN === */
+        .header-background {
+            background: var(--tech-purple);
+            height: 200px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            z-index: 1;
+        }
+
+        .profile-container {
+            position: relative;
+            z-index: 2;
+            padding: 85px 20px 20px; /* Margem superior para não cortar a foto */
+        }
+
+        .user-main-card {
+            background: var(--card-white);
+            border-radius: 25px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .avatar-circle {
+            width: 90px; height: 90px;
+            margin: -75px auto 15px;
+            border: 5px solid var(--card-white);
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            background: white;
+        }
+        .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+        .user-name-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 4px; }
+        .prime-status-label { font-size: 0.75rem; font-weight: 700; color: var(--neon-mint); text-transform: uppercase; letter-spacing: 1px; }
+
+        .visitor-action-btn {
+            background: var(--tech-purple); color: var(--neon-mint);
+            border: none; width: 100%; padding: 15px; border-radius: 15px;
+            font-weight: 800; margin-top: 15px; text-transform: uppercase; cursor: pointer;
+        }
+
+        /* === MENUS === */
+        .menu-section { margin-bottom: 25px; }
+        .section-header { font-size: 0.75rem; font-weight: 800; color: #BBB; margin: 0 0 10px 10px; text-transform: uppercase; }
+        .card-group { background: var(--card-white); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+
+        .menu-row {
+            display: flex; align-items: center; padding: 16px 20px;
+            border-bottom: 1px solid #F4F7FA; cursor: pointer;
+        }
+        .menu-row:last-child { border-bottom: none; }
+
+        .icon-container {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; margin-right: 15px;
+        }
+        .bg-purple { background: #F3E5F5; color: var(--tech-purple); }
+        .bg-blue { background: #E3F2FD; color: #2196F3; }
+        .bg-green { background: #E8F5E9; color: #4CAF50; }
+        .bg-orange { background: #FFF3E0; color: #FF9800; }
+
+        .menu-label-box { flex-grow: 1; }
+        .menu-main-label { font-size: 0.9rem; font-weight: 700; color: #333; }
+        .menu-sub-label { font-size: 0.75rem; color: var(--text-gray); display: block; }
+
+        /* === BOTÃO SWITCH (NOTIFICAÇÕES) === */
+        .switch {
+            position: relative; display: inline-block;
+            width: 42px; height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #DDD; transition: .4s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: "";
+            height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--neon-mint); }
+        input:checked + .slider:before { transform: translateX(18px); }
+
+        /* === BOTÃO SAIR MELHORADO === */
+        .logout-container { padding: 0 5px; margin-top: 10px; }
+        .btn-exit-premium {
+            background: #FFF;
+            border: 2px solid #FFEBEB;
+            border-radius: 20px;
+            padding: 18px;
+            display: flex; align-items: center; justify-content: center;
+            gap: 12px; color: var(--danger-red);
+            font-weight: 800; cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-exit-premium:active { background: #FFF5F5; transform: scale(0.98); }
+
+        /* === FOOTER (PADRONIZADO COM A LOJA) === */
+        .mobile-footer { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background-color: var(--tech-purple); 
+            height: 60px; /* Igual ao seu código da loja */
+            display: flex; justify-content: space-around; 
+            align-items: center; z-index: 1000; border-top: 2px solid var(--neon-mint); 
+        }
+        .nav-item { 
+            color: white; text-decoration: none; display: flex; 
+            flex-direction: column; align-items: center; gap: 2px; 
+            font-size: 0.55rem; font-weight: 600; opacity: 0.6; 
+        }
+        .nav-item.active { color: var(--neon-mint); opacity: 1; }
+        .nav-item .material-icons { font-size: 1.2rem; }
+
+        /* MODAL LOGIN */
+        .login-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; align-items: flex-end; backdrop-filter: blur(4px); }
+        .login-modal-overlay.active { display: flex; }
+        .login-modal-content { width: 100%; background: white; border-top-left-radius: 35px; border-top-right-radius: 35px; padding: 20px 25px 40px; transform: translateY(100%); transition: transform 0.4s; }
+        .login-modal-overlay.active .login-modal-content { transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="header-background"></div>
+
+    <div class="profile-container">
+        
+        <div class="user-main-card">
+            <div class="avatar-circle">
+                <img src="https://i.pravatar.cc/150?u=farma" id="userAvatar">
+            </div>
+            <div id="loggedHeader" style="display:none;">
+                <h2 class="user-name-title" id="userName">Usuário</h2>
+                <p class="prime-status-label">Cliente Farma Prime 💎</p>
+            </div>
+            <div id="visitorHeader">
+                <h2 class="user-name-title">Olá, Visitante</h2>
+                <p style="font-size:0.8rem; color:#888;">Faça login para ver seus dados</p>
+                <button class="visitor-action-btn" onclick="openLoginModal()">Entrar ou Cadastrar</button>
+            </div>
+        </div>
+
+        <div class="menu-section" id="sectionDados" style="display:none;">
+            <p class="section-header">Meus Dados</p>
+            <div class="card-group">
+                <div class="menu-row">
+                    <div class="icon-container bg-purple"><span class="material-icons">badge</span></div>
+                    <div class="menu-label-box">
+                        <span class="menu-main-label" id="displayCPF">000.***.***-00</span>
+                        <span class="menu-sub-label">CPF</span>
+                    </div>
+                </div>
+                <div class="menu-row">
+                    <div class="icon-container bg-purple"><span class="material-icons">mail</span></div>
+                    <div class="menu-label-box">
+                        <span class="menu-main-label" id="displayEmail">usuario@email.com</span>
+                        <span class="menu-sub-label">E-mail</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <p class="section-header">Configurações</p>
+            <div class="card-group">
+                <div class="menu-row">
+                    <div class="icon-container bg-blue"><span class="material-icons">location_on</span></div>
+                    <div class="menu-label-box"><span class="menu-main-label">Meus Endereços</span></div>
+                    <span class="material-icons" style="color:#DDD">chevron_right</span>
+                </div>
+                <div class="menu-row">
+                    <div class="icon-container bg-blue"><span class="material-icons">notifications</span></div>
+                    <div class="menu-label-box"><span class="menu-main-label">Notificações</span></div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <p class="section-header">Rede 1234Farma</p>
+            <div class="card-group">
+                <div class="menu-row" onclick="alert('Buscando unidades Smart próximas...')">
+                    <div class="icon-container bg-green"><span class="material-icons">place</span></div>
+                    <div class="menu-label-box">
+                        <span class="menu-main-label">Localização 1234Farma Smart</span>
+                        <span class="menu-sub-label">Veja as máquinas no mapa</span>
+                    </div>
+                    <span class="material-icons" style="color:#DDD">map</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <p class="section-header">Suporte</p>
+            <div class="card-group">
+                <div class="menu-row" onclick="window.location.href='chat_farmaceutico_mobile.html'">
+                    <div class="icon-container bg-green"><span class="material-icons">forum</span></div>
+                    <div class="menu-label-box"><span class="menu-main-label">Falar com Farmacêutico</span></div>
+                    <span class="material-icons" style="color:#DDD">chevron_right</span>
+                </div>
+                <div class="menu-row">
+                    <div class="icon-container bg-orange"><span class="material-icons">help</span></div>
+                    <div class="menu-label-box"><span class="menu-main-label">Central de Ajuda</span></div>
+                    <span class="material-icons" style="color:#DDD">chevron_right</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="logout-container" id="sectionSair" style="display:none;">
+            <div class="btn-exit-premium" onclick="fazerLogout()">
+                <span class="material-icons">logout</span>
+                SAIR DA CONTA
+            </div>
+        </div>
+
+    </div>
+
+    <div id="loginModal" class="login-modal-overlay" onclick="closeLoginModal()">
+        <div class="login-modal-content" onclick="event.stopPropagation()">
+            <div style="width:40px; height:5px; background:#EEE; border-radius:10px; margin:0 auto 20px;"></div>
+            <div id="loginContentArea"></div>
+        </div>
+    </div>
+
+    <nav class="mobile-footer">
+        <a href="loja_mobile.html" class="nav-item">
+            <span class="material-icons">store</span>
+            <span>LOJA</span>
+        </a>
+        <a href="pedidos_mobile.html" class="nav-item">
+            <span class="material-icons">assignment</span>
+            <span>PEDIDOS</span>
+        </a>
+        <a href="ofertas_mobile.html" class="nav-item">
+            <span class="material-icons">local_offer</span>
+            <span>OFERTAS</span>
+        </a>
+        <a href="favoritos_mobile.html" class="nav-item">
+            <span class="material-icons">favorite</span>
+            <span>FAVORITOS</span>
+        </a>
+        <a href="perfil_mobile.html" class="nav-item active">
+            <span class="material-icons">person</span>
+            <span>PERFIL</span>
+        </a>
+    </nav>
+
+    <script>
+        function checkProfileStatus() {
+            const user = sessionStorage.getItem('usuarioFarmaFacil');
+            const visitorHeader = document.getElementById('visitorHeader');
+            const loggedHeader = document.getElementById('loggedHeader');
+            const sectionDados = document.getElementById('sectionDados');
+            const sectionSair = document.getElementById('sectionSair');
+            const userAvatar = document.getElementById('userAvatar');
+
+            if (user) {
+                visitorHeader.style.display = "none";
+                loggedHeader.style.display = "block";
+                sectionDados.style.display = "block";
+                sectionSair.style.display = "block";
+                userAvatar.src = "https://i.pravatar.cc/150?u=farma";
+                document.getElementById('userName').innerText = user;
+                document.getElementById('displayEmail').innerText = user.toLowerCase().replace(/\s/g, '.') + "@farma.com";
+            } else {
+                visitorHeader.style.display = "block";
+                loggedHeader.style.display = "none";
+                sectionDados.style.display = "none";
+                sectionSair.style.display = "none";
+                userAvatar.src = "https://i.pravatar.cc/150?u=guest";
+            }
+        }
+
+        function fazerLogout() {
+            if(confirm("Deseja realmente sair?")) {
+                sessionStorage.removeItem('usuarioFarmaFacil');
+                window.location.href = 'loja_mobile.html';
+            }
+        }
+
+        function openLoginModal() {
+            fetch('login_mobile.html').then(r => r.text()).then(data => {
+                document.getElementById('loginContentArea').innerHTML = data;
+                document.getElementById('loginModal').classList.add('active');
+            });
+        }
+
+        function closeLoginModal() { document.getElementById('loginModal').classList.remove('active'); }
+
+        window.onload = checkProfileStatus;
+    </script>
+</body>
+</html>
