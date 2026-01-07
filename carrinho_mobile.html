@@ -54,7 +54,6 @@
         }
 
         .h-scroll-section { margin-bottom: 25px; padding: 0 15px; }
-        /* Adicionado cursor grab para indicar que é arrastável */
         .h-scroll-container { display: flex; gap: 12px; overflow-x: auto; padding: 5px 0; cursor: grab; user-select: none; }
         .h-scroll-container:active { cursor: grabbing; }
 
@@ -134,7 +133,7 @@
             </div>
             <div class="sub-brand-text">Carrinho</div>
         </div>
-        <div class="btn-chat-atendente" onclick="alert('Chamando atendente...')">
+        <div class="btn-chat-atendente" onclick="window.location.href='chat_farmaceutico_mobile.html'">
             <span class="material-icons">forum</span>
         </div>
     </header>
@@ -247,11 +246,9 @@
                     </div>
                 `).join('');
                 
-                // Ativa a função de arrastar para este container específico
                 enableDrag(containerId);
             }
 
-            // FUNÇÃO PARA ATIVAR O ARRASTAR COM O MOUSE
             function enableDrag(containerId) {
                 const slider = document.getElementById(containerId);
                 let isDown = false;
@@ -274,7 +271,7 @@
                     if (!isDown) return;
                     e.preventDefault();
                     const x = e.pageX - slider.offsetLeft;
-                    const walk = (x - startX) * 2; // multiplicador de velocidade
+                    const walk = (x - startX) * 2; 
                     slider.scrollLeft = scrollLeft - walk;
                 });
             }
@@ -355,6 +352,7 @@
                 const user = sessionStorage.getItem('usuarioFarmaFacil');
                 if (!user) {
                     alert("Por favor, faça login para finalizar o pedido.");
+                    // Redireciona para a ponte de login
                     window.location.href = 'login_mobile.html';
                 } else {
                     window.location.href = 'metodopagamento_mobile.html';
