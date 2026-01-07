@@ -21,22 +21,32 @@
         
         body { background-color: var(--page-bg); color: var(--tech-purple); padding-bottom: 90px; overflow-x: hidden; }
 
-        /* === HEADER === */
-        header { padding: 40px 15px 15px 15px; display: flex; justify-content: center; align-items: center; position: relative; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        /* === HEADER FIXO === */
+        .header-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        header { padding: 40px 15px 15px 15px; display: flex; justify-content: center; align-items: center; position: relative; background: white; }
         .brand-logo { font-size: 1.3rem; font-weight: 900; letter-spacing: -1px; }
         .brand-1234 { color: var(--neon-mint); }
         .header-icon-right { position: absolute; right: 15px; top: 45px; color: var(--tech-purple); cursor: pointer; }
-        .cart-badge { position: absolute; top: -5px; right: -8px; background-color: var(--danger-red); color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 10px; border: 2px solid white; }
+        .cart-badge { position: absolute; top: -5px; right: -8px; background-color: var(--danger-red); color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 10px; border: 2px solid white; font-weight: bold; }
 
         .timer-strip { background-color: var(--tech-purple); color: white; padding: 10px; text-align: center; font-size: 0.8rem; font-weight: 700; }
         .timer-digits { color: var(--neon-mint); font-family: monospace; font-size: 1.1rem; margin-left: 8px; }
 
-        .search-bar-wrapper { padding: 15px; }
+        .search-bar-wrapper { padding: 15px; background: white; }
         .search-input { width: 100%; padding: 8px 35px; border-radius: 20px; background-color: var(--element-bg); font-size: 0.9rem; height: 38px; display: flex; align-items: center; position: relative; }
         .search-icon-span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 1.1rem; opacity: 0.5; }
         .search-input input { background: none; border: none; width: 100%; outline: none; color: var(--tech-purple); }
 
-        main { padding: 0 15px 15px; }
+        main { padding: 210px 15px 15px 15px; }
 
         /* === MEGA PROMOÇÃO === */
         .carousel-container { position: relative; margin-bottom: 30px; width: 100%; }
@@ -75,12 +85,18 @@
         .dot { width: 7px; height: 7px; border-radius: 50%; background: #DDD; }
         .dot.active { background: var(--tech-purple); width: 20px; border-radius: 4px; }
 
-        /* === LOGIN CARD SEM DEGRADÊ === */
+        /* === LOGIN CARD === */
         .login-split-card { background: var(--tech-purple); border-radius: 25px; padding: 25px; margin: 10px 0 30px; color: white; text-align: center; border: 2px dashed rgba(255,255,255,0.3); }
         .split-buttons { display: flex; gap: 10px; margin-top: 15px; }
         .split-buttons button { flex: 1; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 0.75rem; border: none; cursor: pointer; text-transform: uppercase; }
         .btn-login-main { background: var(--neon-mint); color: var(--tech-purple); }
         .btn-register-sub { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); }
+
+        /* === NOVO CARD LOGADO VIP === */
+        .logged-prime-card { background: linear-gradient(135deg, #2E1A47 0%, #4B2C73 100%); border-radius: 25px; padding: 25px; margin: 10px 0 30px; color: white; display: none; align-items: center; gap: 15px; border: 1px solid #00D284; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .prime-info h4 { font-size: 1rem; font-weight: 800; margin-bottom: 4px; color: #FFF; }
+        .prime-info p { font-size: 0.75rem; color: #CCC; margin-bottom: 10px; }
+        .prime-badge { background: var(--neon-mint); color: var(--tech-purple); padding: 4px 10px; border-radius: 8px; font-weight: 900; font-size: 0.7rem; text-transform: uppercase; }
 
         /* === GRID PRODUTOS === */
         .section-title { font-size: 0.95rem; margin-bottom: 15px; font-weight: 800; border-left: 3px solid var(--neon-mint); padding-left: 8px; color: var(--tech-purple); }
@@ -98,6 +114,8 @@
         .product-price { font-size: 0.95rem; font-weight: 800; color: var(--tech-purple); }
         .btn-add-grid { width: 28px; height: 28px; border-radius: 50%; border: none; background: var(--neon-mint); color: white; position: absolute; bottom: 8px; right: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
         .btn-add-grid.added { background: var(--tech-purple); transform: scale(1.1); }
+        .btn-fav { position: absolute; top: 8px; left: 8px; z-index: 5; color: #ccc; cursor: pointer; font-size: 1.1rem; }
+        .btn-fav.active { color: var(--danger-red); }
 
         /* === KITS === */
         .kits-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 20px; cursor: grab; scrollbar-width: none; }
@@ -115,6 +133,17 @@
         .btn-add-kit { background: var(--tech-purple); color: var(--neon-mint); border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
         .btn-add-kit.added { background: var(--neon-mint); color: var(--tech-purple); }
 
+        /* === MODAIS CUSTOMIZADOS === */
+        .overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 30px; backdrop-filter: blur(4px); }
+        .alert-card { background: white; border-radius: 25px; width: 100%; padding: 30px 20px; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        .btn-alert-login { background: var(--tech-purple); color: var(--neon-mint); border: none; width: 100%; padding: 14px; border-radius: 12px; font-weight: 800; margin-top: 20px; cursor: pointer; }
+
+        .login-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2500; display: none; align-items: flex-end; }
+        .login-modal-overlay.active { display: flex; }
+        .login-modal-content { width: 100%; background: white; border-top-left-radius: 30px; border-top-right-radius: 30px; padding: 20px 25px 40px 25px; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); max-height: 90vh; overflow-y: auto; }
+        .login-modal-overlay.active .login-modal-content { transform: translateY(0); }
+        .modal-drag-handle { width: 40px; height: 5px; background: #E0E0E0; border-radius: 10px; margin: 0 auto 20px auto; }
+
         .disclaimer { text-align: center; font-size: 0.65rem; color: #999; margin: 20px 0; line-height: 1.4; padding: 0 10px; }
 
         /* FOOTER */
@@ -126,20 +155,22 @@
 </head>
 <body>
 
-    <header>
-        <div class="brand-logo"><span class="brand-1234">1234</span><span class="brand-farma">Farma</span></div>
-        <div class="header-icon-right" onclick="window.location.href='carrinho_mobile.html'">
-            <span class="material-icons">shopping_cart</span>
-            <span id="cartBadge" class="cart-badge">0</span>
-        </div>
-    </header>
+    <div class="header-wrapper">
+        <header>
+            <div class="brand-logo"><span class="brand-1234">1234</span><span class="brand-farma">Farma</span></div>
+            <div class="header-icon-right" onclick="window.location.href='carrinho_mobile.html'">
+                <span class="material-icons">shopping_cart</span>
+                <span id="cartBadge" class="cart-badge">0</span>
+            </div>
+        </header>
 
-    <div class="timer-strip" id="timerStrip">OFERTAS RELÂMPAGO ACABAM EM: <span class="timer-digits" id="timer">00:00:00</span></div>
+        <div class="timer-strip" id="timerStrip">OFERTAS RELÂMPAGO ACABAM EM: <span class="timer-digits" id="timer">00:00:00</span></div>
 
-    <div class="search-bar-wrapper">
-        <div class="search-input">
-            <span class="material-icons search-icon-span">search</span>
-            <input type="text" id="mainSearch" placeholder="O que você procura em oferta?" onkeyup="searchOffers()">
+        <div class="search-bar-wrapper">
+            <div class="search-input">
+                <span class="material-icons search-icon-span">search</span>
+                <input type="text" id="mainSearch" placeholder="O que você procura em oferta?" onkeyup="searchOffers()">
+            </div>
         </div>
     </div>
 
@@ -200,22 +231,58 @@
         </section>
 
         <section id="loginSection">
-            <div class="login-split-card">
+            <div class="login-split-card" id="cardNotLogged">
                 <h4>Ative ofertas personalizadas</h4>
                 <p>Preços exclusivos para clientes logados.</p>
                 <div class="split-buttons">
-                    <button class="btn-split btn-login-main" onclick="window.location.href='login_cpf_senha_mobile.html'">Entrar</button>
-                    <button class="btn-split btn-register-sub" onclick="window.location.href='cadastro_mobile.html'">Cadastre-se</button>
+                    <button class="btn-login-main" onclick="openLoginModal()">Entrar</button>
+                    <button class="btn-register-sub" onclick="window.location.href='cadastro_mobile.html'">Cadastre-se</button>
+                </div>
+            </div>
+
+            <div class="logged-prime-card" id="cardLogged">
+                <div class="prime-info">
+                    <h4>Você é Farma Prime 💎</h4>
+                    <p>Aproveite seus descontos exclusivos aplicados em toda a loja.</p>
+                    <span class="prime-badge">Status: VIP Ativo</span>
                 </div>
             </div>
         </section>
 
         <h3 class="section-title">Mais Ofertas</h3>
         <div class="product-grid" id="offersGrid">
-            <div class="product-card" data-name="dorflex"><div class="promo-ribbon"><span>PROMOÇÃO</span></div><div class="product-img-container"><img src="img/dorflex.png" class="product-img"></div><div class="product-info-wrapper"><h3 class="product-title">Dorflex 10 Comp.</h3><div class="price-container"><span class="grid-old-price">R$ 15,90</span><span class="product-price">R$ 11,13</span></div></div><button class="btn-add-grid" onclick="adicionarAoCarrinho(1, 'Dorflex', 11.13, 'img/dorflex.png', this)"><span class="material-icons">add</span></button></div>
-            <div class="product-card" data-name="vick"><div class="promo-ribbon"><span>PROMOÇÃO</span></div><div class="product-img-container"><img src="img/vick.png" class="product-img"></div><div class="product-info-wrapper"><h3 class="product-title">Vick Vaporub 12g</h3><div class="price-container"><span class="grid-old-price">R$ 28,00</span><span class="product-price">R$ 22,40</span></div></div><button class="btn-add-grid" onclick="adicionarAoCarrinho(8, 'Vick', 22.40, 'img/vick.png', this)"><span class="material-icons">add</span></button></div>
-            <div class="product-card" data-name="advil"><div class="promo-ribbon"><span>PROMOÇÃO</span></div><div class="product-img-container"><img src="img/advil.png" class="product-img"></div><div class="product-info-wrapper"><h3 class="product-title">Advil 400mg 8 Caps.</h3><div class="price-container"><span class="grid-old-price">R$ 25,00</span><span class="product-price">R$ 21,25</span></div></div><button class="btn-add-grid" onclick="adicionarAoCarrinho(4, 'Advil', 21.25, 'img/advil.png', this)"><span class="material-icons">add</span></button></div>
-            <div class="product-card" data-name="eno">
+            <div class="product-card" data-name="dorflex" data-id="1" data-price="11.13" data-img="img/dorflex.png">
+                <span class="material-icons btn-fav" onclick="toggleFavorito(this)">favorite</span>
+                <div class="promo-ribbon"><span>PROMOÇÃO</span></div>
+                <div class="product-img-container"><img src="img/dorflex.png" class="product-img"></div>
+                <div class="product-info-wrapper">
+                    <h3 class="product-title">Dorflex 10 Comp.</h3>
+                    <div class="price-container"><span class="grid-old-price">R$ 15,90</span><span class="product-price">R$ 11,13</span></div>
+                </div>
+                <button class="btn-add-grid" onclick="adicionarAoCarrinho(1, 'Dorflex', 11.13, 'img/dorflex.png', this)"><span class="material-icons">add</span></button>
+            </div>
+            <div class="product-card" data-name="vick" data-id="8" data-price="22.40" data-img="img/vick.png">
+                <span class="material-icons btn-fav" onclick="toggleFavorito(this)">favorite</span>
+                <div class="promo-ribbon"><span>PROMOÇÃO</span></div>
+                <div class="product-img-container"><img src="img/vick.png" class="product-img"></div>
+                <div class="product-info-wrapper">
+                    <h3 class="product-title">Vick Vaporub 12g</h3>
+                    <div class="price-container"><span class="grid-old-price">R$ 28,00</span><span class="product-price">R$ 22,40</span></div>
+                </div>
+                <button class="btn-add-grid" onclick="adicionarAoCarrinho(8, 'Vick', 22.40, 'img/vick.png', this)"><span class="material-icons">add</span></button>
+            </div>
+            <div class="product-card" data-name="advil" data-id="4" data-price="21.25" data-img="img/advil.png">
+                <span class="material-icons btn-fav" onclick="toggleFavorito(this)">favorite</span>
+                <div class="promo-ribbon"><span>PROMOÇÃO</span></div>
+                <div class="product-img-container"><img src="img/advil.png" class="product-img"></div>
+                <div class="product-info-wrapper">
+                    <h3 class="product-title">Advil 400mg 8 Caps.</h3>
+                    <div class="price-container"><span class="grid-old-price">R$ 25,00</span><span class="product-price">R$ 21,25</span></div>
+                </div>
+                <button class="btn-add-grid" onclick="adicionarAoCarrinho(4, 'Advil', 21.25, 'img/advil.png', this)"><span class="material-icons">add</span></button>
+            </div>
+            <div class="product-card" data-name="eno" data-id="12" data-price="2.47" data-img="img/eno.png">
+                <span class="material-icons btn-fav" onclick="toggleFavorito(this)">favorite</span>
                 <div class="promo-ribbon"><span>PROMOÇÃO</span></div>
                 <div class="product-img-container"><img src="img/eno.png" class="product-img"></div>
                 <div class="product-info-wrapper">
@@ -225,8 +292,26 @@
                 </div>
                 <button class="btn-add-grid" onclick="adicionarAoCarrinho(12, 'Eno', 2.47, 'img/eno.png', this)"><span class="material-icons">add</span></button>
             </div>
-            <div class="product-card" data-name="vitamina c"><div class="promo-ribbon"><span>PROMOÇÃO</span></div><div class="product-img-container"><img src="img/vitamina_c.png" class="product-img"></div><div class="product-info-wrapper"><h3 class="product-title">Vitamina C 1g</h3><div class="price-container"><span class="grid-old-price">R$ 16,00</span><span class="product-price">R$ 11,00</span></div></div><button class="btn-add-grid" onclick="adicionarAoCarrinho(9, 'Vitamina C', 11, 'img/vitamina_c.png', this)"><span class="material-icons">add</span></button></div>
-            <div class="product-card" data-name="neosaldina"><div class="promo-ribbon"><span>PROMOÇÃO</span></div><div class="product-img-container"><img src="img/neosaldina.png" class="product-img"></div><div class="product-info-wrapper"><h3 class="product-title">Neosaldina 30 Drg.</h3><div class="price-container"><span class="grid-old-price">R$ 32,00</span><span class="product-price">R$ 19,50</span></div></div><button class="btn-add-grid" onclick="adicionarAoCarrinho(2, 'Neosaldina', 19.5, 'img/neosaldina.png', this)"><span class="material-icons">add</span></button></div>
+            <div class="product-card" data-name="vitamina c" data-id="9" data-price="11.00" data-img="img/vitamina_c.png">
+                <span class="material-icons btn-fav" onclick="toggleFavorito(this)">favorite</span>
+                <div class="promo-ribbon"><span>PROMOÇÃO</span></div>
+                <div class="product-img-container"><img src="img/vitamina_c.png" class="product-img"></div>
+                <div class="product-info-wrapper">
+                    <h3 class="product-title">Vitamina C 1g</h3>
+                    <div class="price-container"><span class="grid-old-price">R$ 16,00</span><span class="product-price">R$ 11,00</span></div>
+                </div>
+                <button class="btn-add-grid" onclick="adicionarAoCarrinho(9, 'Vitamina C', 11, 'img/vitamina_c.png', this)"><span class="material-icons">add</span></button>
+            </div>
+            <div class="product-card" data-name="neosaldina" data-id="2" data-price="19.50" data-img="img/neosaldina.png">
+                <span class="material-icons btn-fav" onclick="toggleFavorito(this)">favorite</span>
+                <div class="promo-ribbon"><span>PROMOÇÃO</span></div>
+                <div class="product-img-container"><img src="img/neosaldina.png" class="product-img"></div>
+                <div class="product-info-wrapper">
+                    <h3 class="product-title">Neosaldina 30 Drg.</h3>
+                    <div class="price-container"><span class="grid-old-price">R$ 32,00</span><span class="product-price">R$ 19,50</span></div>
+                </div>
+                <button class="btn-add-grid" onclick="adicionarAoCarrinho(2, 'Neosaldina', 19.5, 'img/neosaldina.png', this)"><span class="material-icons">add</span></button>
+            </div>
         </div>
 
         <h3 class="section-title">Kits Promocionais</h3>
@@ -242,15 +327,56 @@
         <p class="disclaimer">Os descontos não são acumulativos com outras promoções.</p>
     </main>
 
+    <div id="customAlert" class="overlay-alert">
+        <div class="alert-card">
+            <span class="material-icons" style="font-size:3.5rem; color:var(--tech-purple)">lock</span>
+            <h3 style="margin:15px 0">Acesse sua conta</h3>
+            <p style="font-size:0.9rem; color:#666">Você precisa estar logado para favoritar ofertas exclusivas.</p>
+            <button class="btn-alert-login" onclick="goToLoginFromAlert()">Entrar Agora</button>
+            <button style="background:none; border:none; margin-top:15px; color:#999; cursor:pointer;" onclick="closeAlert()">Depois</button>
+        </div>
+    </div>
+
+    <div id="loginModal" class="login-modal-overlay" onclick="closeLoginModal()">
+        <div class="login-modal-content" onclick="event.stopPropagation()">
+            <div class="modal-drag-handle"></div>
+            <div id="loginContentArea"></div>
+        </div>
+    </div>
+
     <nav class="mobile-footer">
         <a href="loja_mobile.html" class="nav-item"><span class="material-icons">store</span><span>LOJA</span></a>
         <a href="pedidos_mobile.html" class="nav-item"><span class="material-icons">assignment</span><span>PEDIDOS</span></a>
         <a href="ofertas_mobile.html" class="nav-item active"><span class="material-icons">local_offer</span><span>OFERTAS</span></a>
-        <a href="#" class="nav-item"><span class="material-icons">favorite</span><span>FAVORITOS</span></a>
+        <a href="favoritos_mobile.html" class="nav-item"><span class="material-icons">favorite</span><span>FAVORITOS</span></a>
         <a href="#" class="nav-item"><span class="material-icons">person</span><span>PERFIL</span></a>
     </nav>
 
     <script>
+        // Lógica de Login/Status
+        function checkLoginStatus() {
+            const user = sessionStorage.getItem('usuarioFarmaFacil');
+            document.getElementById('cardLogged').style.display = user ? 'flex' : 'none';
+            document.getElementById('cardNotLogged').style.display = user ? 'none' : 'block';
+        }
+
+        function openLoginModal() {
+            fetch('login_mobile.html').then(r => r.text()).then(data => {
+                document.getElementById('loginContentArea').innerHTML = data;
+                document.getElementById('loginModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function showLoginAlert() { document.getElementById('customAlert').style.display = 'flex'; }
+        function closeAlert() { document.getElementById('customAlert').style.display = 'none'; }
+        function goToLoginFromAlert() { closeAlert(); openLoginModal(); }
+
         function searchOffers() {
             const query = document.getElementById('mainSearch').value.toLowerCase();
             const cards = document.querySelectorAll('.product-card');
@@ -263,14 +389,14 @@
                 });
             } else {
                 sectionsToHide.forEach(id => { if(document.getElementById(id)) document.getElementById(id).style.display = 'block'; });
+                checkLoginStatus();
                 cards.forEach(card => card.style.display = 'flex');
             }
         }
 
         const carousel = document.getElementById('megaCarousel');
-        const slides = document.querySelectorAll('.super-slide');
         const dotsContainer = document.getElementById('dotsContainer');
-        
+        const slides = document.querySelectorAll('.super-slide');
         slides.forEach((_, i) => {
             const dot = document.createElement('div');
             dot.className = `dot ${i === 0 ? 'active' : ''}`;
@@ -329,6 +455,27 @@
             }
         }
 
+        function toggleFavorito(element) {
+            const user = sessionStorage.getItem('usuarioFarmaFacil');
+            if (!user) { showLoginAlert(); return; }
+
+            const card = element.closest('.product-card');
+            const product = { id: parseInt(card.dataset.id), nome: card.querySelector('.product-title').innerText, preco: parseFloat(card.dataset.price), img: card.dataset.img };
+            let favs = JSON.parse(localStorage.getItem('favs_mobile')) || [];
+            const index = favs.findIndex(item => item.id === product.id);
+            if (index > -1) { favs.splice(index, 1); element.classList.remove('active'); } 
+            else { favs.push(product); element.classList.add('active'); }
+            localStorage.setItem('favs_mobile', JSON.stringify(favs));
+        }
+
+        function syncFavoritos() {
+            let favs = JSON.parse(localStorage.getItem('favs_mobile')) || [];
+            document.querySelectorAll('.product-card').forEach(card => {
+                const id = parseInt(card.dataset.id);
+                if (favs.some(f => f.id === id)) { card.querySelector('.btn-fav').classList.add('active'); }
+            });
+        }
+
         function enableDrag(id) {
             const el = document.getElementById(id); if(!el) return;
             let isDown = false, startX, scrollLeft;
@@ -359,6 +506,8 @@
             startTimer(9850, document.querySelector('#timer')); 
             updateCartBadge();
             enableDrag('kitsScroll');
+            syncFavoritos();
+            checkLoginStatus();
         };
     </script>
 </body>

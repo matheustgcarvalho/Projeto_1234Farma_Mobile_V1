@@ -178,6 +178,27 @@
 
         .modal-drag-handle { width: 40px; height: 5px; background: #E0E0E0; border-radius: 10px; margin: 0 auto 20px auto; }
 
+        /* === NOVO CUSTOM ALERT === */
+        .alert-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 3000;
+            display: none; align-items: center; justify-content: center;
+            padding: 30px; backdrop-filter: blur(4px);
+        }
+        .alert-card {
+            background: white; border-radius: 25px; width: 100%;
+            padding: 30px 20px; text-align: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            animation: alertShow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes alertShow { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .alert-icon { font-size: 3.5rem; color: var(--tech-purple); margin-bottom: 15px; }
+        .alert-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; color: var(--tech-purple); }
+        .alert-text { font-size: 0.9rem; color: #666; line-height: 1.5; margin-bottom: 25px; }
+        .alert-buttons { display: flex; flex-direction: column; gap: 10px; }
+        .btn-alert-login { background: var(--tech-purple); color: var(--neon-mint); border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; }
+        .btn-alert-cancel { background: transparent; color: #999; border: none; padding: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
+
         /* MODAL STORIES */
         .story-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 2000; display: none; flex-direction: column; }
         .story-progress-container { display: flex; gap: 4px; padding: 10px; position: absolute; top: 0; width: 100%; z-index: 10; }
@@ -194,7 +215,7 @@
 
     <div class="fixed-top-section">
         <header>
-            <div class="header-icon-left" onclick="alert('Iniciando chat...')"><span class="material-icons">forum</span></div>
+            <div class="header-icon-left" onclick="window.location.href='chat_farmaceutico_mobile.html'"><span class="material-icons">forum</span></div>
             <div class="brand-logo"><span class="brand-1234">1234</span><span class="brand-farma">Farma</span></div>
             <div class="header-icon-right" onclick="window.location.href='carrinho_mobile.html'">
                 <span class="material-icons">shopping_cart</span>
@@ -267,7 +288,7 @@
             <div class="story-item" onclick="openStory(7)"><div class="story-ring"><div class="story-thumb"><span class="material-icons">help</span></div></div><span class="story-name">Ajuda</span></div>
         </section>
 
-        <div class="login-call-card">
+        <div class="login-call-card" id="loginCallTop">
             <div class="login-call-card-text"><h4>Sua conta Farma</h4><p>Entre ou cadastre-se para comprar.</p></div>
             <button class="btn-login-action" onclick="openLoginModal()">ENTRAR / CADASTRAR</button>
         </div>
@@ -290,12 +311,24 @@
         </div>
         <div class="best-sellers-scroll" id="bestSellersScroll"></div>
 
-        <div class="login-call-card-bottom">
+        <div class="login-call-card-bottom" id="loginCallBottom">
             <h4>Falta pouco para finalizar!</h4>
             <p>Faça login agora para aproveitar descontos exclusivos e finalizar seu pedido com segurança.</p>
             <button class="btn-login-action-bottom" onclick="openLoginModal()">Acessar Minha Conta</button>
         </div>
     </main>
+
+    <div id="customAlert" class="alert-overlay">
+        <div class="alert-card">
+            <span class="material-icons alert-icon">lock</span>
+            <div class="alert-title">Acesse sua conta</div>
+            <div class="alert-text">Você precisa estar logado para favoritar produtos e aproveitar ofertas exclusivas.</div>
+            <div class="alert-buttons">
+                <button class="btn-alert-login" onclick="goToLoginFromAlert()">Fazer Login Agora</button>
+                <button class="btn-alert-cancel" onclick="closeAlert()">Depois</button>
+            </div>
+        </div>
+    </div>
 
     <div id="loginModal" class="login-modal-overlay" onclick="closeLoginModal()">
         <div class="login-modal-content" onclick="event.stopPropagation()">
@@ -316,24 +349,35 @@
         <a href="loja_mobile.html" class="nav-item active"><span class="material-icons">store</span><span>LOJA</span></a>
         <a href="pedidos_mobile.html" class="nav-item"><span class="material-icons">assignment</span><span>PEDIDOS</span></a>
         <a href="ofertas_mobile.html" class="nav-item"><span class="material-icons">local_offer</span><span>OFERTAS</span></a>
-        <a href="#" class="nav-item"><span class="material-icons">favorite</span><span>FAVORITOS</span></a>
+        <a href="favoritos_mobile.html" class="nav-item"><span class="material-icons">favorite</span><span>FAVORITOS</span></a>
         <a href="#" class="nav-item"><span class="material-icons">person</span><span>PERFIL</span></a>
     </nav>
 
     <script>
-        // Lógica de abertura do Modal de Login tornada GLOBAL
+        /* === FUNÇÕES DO ALERTA CUSTOMIZADO === */
+        function showLoginAlert() {
+            document.getElementById('customAlert').style.display = 'flex';
+        }
+
+        function closeAlert() {
+            document.getElementById('customAlert').style.display = 'none';
+        }
+
+        function goToLoginFromAlert() {
+            closeAlert();
+            openLoginModal();
+        }
+
         window.openLoginModal = function() {
             fetch('login_mobile.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('loginContentArea').innerHTML = data;
                     document.getElementById('loginModal').classList.add('active');
-                    // Bloqueio do scroll do body
                     document.body.style.overflow = 'hidden';
                 });
         }
 
-        // Função GLOBAL para trocar conteúdo dentro do modal sem fechar
         window.trocarConteudoModal = function(arquivo) {
             fetch(arquivo)
                 .then(response => response.text())
@@ -344,20 +388,10 @@
 
         window.closeLoginModal = function() {
             document.getElementById('loginModal').classList.remove('active');
-            
-            // CORREÇÃO DEFINITIVA DO BUG DE TELA MENOR:
-            // Removemos o overflow e forçamos o scroll a ser 'auto'
             document.body.style.overflow = 'auto';
-            
-            // Força o navegador a recalcular a altura real da viewport mobile
-            // disparando um evento de resize ou simplesmente limpando estilos inline
             document.body.style.removeProperty('height');
             document.body.style.removeProperty('width');
-            
-            // Pequeno delay para garantir que a transição do modal termine antes do reset total
-            setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
-            }, 300);
+            setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 300);
         }
 
         const produtos = [
@@ -402,7 +436,6 @@
             const subText = document.getElementById('machineAddressSub');
             const icon = document.getElementById('machineIcon');
             const machine = JSON.parse(localStorage.getItem('selected_machine'));
-
             if (machine) {
                 banner.classList.remove('status-alert', 'pulse');
                 banner.classList.add('status-ok');
@@ -435,19 +468,16 @@
             const content = document.getElementById('storyContentView');
             content.style.backgroundColor = data.color;
             content.innerHTML = `<div><h1 style="font-size:2rem; margin-bottom:20px">${data.title}</h1><p style="font-size:1.2rem">${data.text}</p></div>`;
-            
             storyData.forEach((_, i) => {
                 const fill = document.getElementById(`fill-${i}`);
                 fill.style.transition = 'none';
                 fill.style.width = i < currentStoryIndex ? '100%' : '0%';
             });
-
             setTimeout(() => {
                 const fill = document.getElementById(`fill-${currentStoryIndex}`);
                 fill.style.transition = 'width 5s linear';
                 fill.style.width = '100%';
             }, 50);
-
             storyTimer = setTimeout(nextStory, 5000);
         }
 
@@ -472,7 +502,6 @@
                 window.location.href = 'selecao_maquina_mobile.html';
                 return;
             }
-
             const product = produtos.find(p => p.id === id);
             let cart = JSON.parse(localStorage.getItem('cart_mobile')) || [];
             const existing = cart.find(item => item.id === id);
@@ -490,9 +519,35 @@
             document.getElementById('cartBadge').textContent = cart.reduce((acc, i) => acc + i.qty, 0);
         }
 
+        /* === LOGICA DE FAVORITOS COM ALERTA CUSTOMIZADO === */
+        function toggleFavorito(id, element) {
+            const user = sessionStorage.getItem('usuarioFarmaFacil');
+            
+            if (!user) {
+                showLoginAlert(); // CHAMA O NOVO ALERTA
+                return;
+            }
+
+            const product = produtos.find(p => p.id === id);
+            let favs = JSON.parse(localStorage.getItem('favs_mobile')) || [];
+            const index = favs.findIndex(item => item.id === id);
+
+            if (index > -1) {
+                favs.splice(index, 1);
+                element.classList.remove('active');
+            } else {
+                favs.push(product);
+                element.classList.add('active');
+            }
+            localStorage.setItem('favs_mobile', JSON.stringify(favs));
+        }
+
         function createCard(p) {
+            const favs = JSON.parse(localStorage.getItem('favs_mobile')) || [];
+            const isFav = favs.some(fav => fav.id === p.id);
+
             return `<div class="product-card" onclick="window.location.href='produto_detalhes_mobile.html?id=${p.id}'">
-                <span class="material-icons btn-fav" onclick="event.stopPropagation(); this.classList.toggle('active')">favorite</span>
+                <span class="material-icons btn-fav ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorito(${p.id}, this)">favorite</span>
                 <div class="product-img-container"><img src="${p.img}" class="product-img" onerror="this.src='https://placehold.co/120'"></div>
                 <div class="product-info-wrapper">
                     <h3 class="product-title">${p.nome}</h3>
@@ -536,15 +591,29 @@
             setInterval(() => { if(!slides[cur]) return; slides[cur].classList.remove('active'); dots[cur].classList.remove('active'); cur = (cur + 1) % slides.length; slides[cur].classList.add('active'); dots[cur].classList.add('active'); }, 5000);
         }
 
+        function checkLoginStatus() {
+            const user = sessionStorage.getItem('usuarioFarmaFacil');
+            const callTop = document.getElementById('loginCallTop');
+            const callBottom = document.getElementById('loginCallBottom');
+            
+            if (user) {
+                if (callTop) callTop.style.display = 'none';
+                if (callBottom) callBottom.style.display = 'none';
+                document.getElementById('userGreetingName').innerText = user.split(' ')[0];
+            } else {
+                if (callTop) callTop.style.display = 'flex';
+                if (callBottom) callBottom.style.display = 'flex';
+                document.getElementById('userGreetingName').innerText = 'Visitante';
+            }
+        }
+
         window.onload = () => {
             enableDrag('catNav'); enableDrag('storiesNav'); enableDrag('bestSellersScroll');
             startCarousel('.promo-slide', '#promoDots'); startCarousel('.promo-slide-mini', '#miniDots');
             render(produtos, 'productsContainer'); render(produtos.slice(0, 8), 'bestSellersScroll');
             updateCartBadge();
             updateMachineBanner();
-            
-            const user = sessionStorage.getItem('usuarioFarmaFacil');
-            if (user) document.getElementById('userGreetingName').innerText = user.split(' ')[0];
+            checkLoginStatus();
         };
         
         document.querySelector('.story-nav-left')?.addEventListener('click', prevStory);

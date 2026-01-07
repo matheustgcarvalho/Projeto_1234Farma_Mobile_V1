@@ -45,19 +45,54 @@
 
     <div class="input-group">
         <label>Seu CPF</label>
-        <input type="tel" placeholder="000.000.000-00">
+        <input type="tel" id="cpfInput" placeholder="000.000.000-00">
     </div>
 
     <div class="input-group">
         <label>Sua Senha</label>
-        <input type="password" placeholder="Digite sua senha">
+        <input type="password" id="senhaInput" placeholder="Digite sua senha">
     </div>
 
-    <button class="btn-submit" onclick="alert('Login realizado!')">CONTINUAR</button>
+    <button class="btn-submit" onclick="validarLogin()">CONTINUAR</button>
 
     <div class="footer-links">
         <div>Ainda não tem conta? <span class="link-green" onclick="window.location.href='cadastro_mobile.html'">Cadastre-se</span></div>
         <div style="color:#888; font-weight:600; cursor:pointer;" onclick="window.location.href='loja_mobile.html'">Continuar sem acesso</div>
     </div>
+
+    <script>
+        function validarLogin() {
+            const cpfDigitado = document.getElementById('cpfInput').value;
+            const senhaDigitada = document.getElementById('senhaInput').value;
+
+            const cpfCorreto = "000.000.000-00";
+            const senhaCorreta = "teste123";
+
+            if (cpfDigitado === cpfCorreto && senhaDigitada === senhaCorreta) {
+                // Define a sessão do usuário
+                sessionStorage.setItem('usuarioFarmaFacil', 'Matheus Cliente');
+                
+                // Se estiver dentro de um modal (como na loja), recarrega a página principal para aplicar o estado logado
+                if (window.parent && typeof window.parent.closeLoginModal === 'function') {
+                    window.parent.location.reload();
+                } else {
+                    // Caso contrário, redireciona normalmente
+                    window.location.href = 'loja_mobile.html';
+                }
+            } else {
+                alert("CPF ou Senha incorretos. Tente novamente.");
+            }
+        }
+
+        // Máscara automática para facilitar o teste do CPF
+        document.getElementById('cpfInput').addEventListener('input', function (e) {
+            let v = e.target.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.slice(0, 11);
+            if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, "$1.$2.$3");
+            else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, "$1.$2");
+            e.target.value = v;
+        });
+    </script>
 </body>
 </html>

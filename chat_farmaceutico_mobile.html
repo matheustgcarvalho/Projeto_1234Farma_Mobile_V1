@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chat Farmacêutico - 1234Farma</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root { 
+            --tech-purple: #2E1A47;
+            --neon-mint: #00D284;
+            --page-bg: #F0F2F5;       
+            --chat-bubble-me: #2E1A47;
+            --chat-bubble-dr: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        
+        body { background-color: var(--page-bg); color: var(--tech-purple); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* === ANIMAÇÃO DE ENTRADA === */
+        #introOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 5000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .hand-anim .material-icons { 
+            font-size: 60px; color: var(--tech-purple); opacity: 0.3;
+            animation: fingerTap 1.25s ease-in-out infinite; 
+        }
+        @keyframes fingerTap {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(0.85); opacity: 0.7; color: var(--neon-mint); }
+        }
+
+        /* === HEADER === */
+        header { 
+            background: white; padding: 45px 15px 15px 15px; 
+            display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 10;
+        }
+        .dr-avatar-header { width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid var(--neon-mint); object-fit: cover; }
+        .dr-info { flex-grow: 1; }
+        .dr-name { font-size: 0.85rem; font-weight: 800; display: block; }
+        .dr-crf { font-size: 0.65rem; color: #999; }
+        .btn-close-chat { width: 28px; height: 28px; border-radius: 50%; background: #FFF1F1; color: #FF4757; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+        /* === CHAT BODY === */
+        #chatBody { flex-grow: 1; overflow-y: auto; padding: 20px 15px; display: flex; flex-direction: column; gap: 15px; scrollbar-width: none; }
+        .msg-dr { display: flex; gap: 10px; max-width: 85%; align-self: flex-start; }
+        .dr-thumb { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; align-self: flex-end; border: 1px solid var(--neon-mint); }
+        .bubble-dr { background: var(--chat-bubble-dr); padding: 10px 14px; border-radius: 15px 15px 15px 4px; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .msg-me { align-self: flex-end; max-width: 80%; }
+        .bubble-me { background: var(--tech-purple); color: white; padding: 10px 14px; border-radius: 15px 15px 4px 15px; font-size: 0.85rem; }
+
+        /* === INPUT === */
+        .chat-input-area { background: white; padding: 12px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #EEE; }
+        .input-box { flex-grow: 1; background: var(--page-bg); border-radius: 20px; padding: 8px 15px; }
+        .input-box input { width: 100%; background: none; border: none; outline: none; font-size: 0.85rem; }
+        .btn-send { color: var(--tech-purple); cursor: pointer; display: flex; align-items: center; }
+
+        /* === MODAIS (Confirmação e Pesquisa) === */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 6000; display: none; align-items: center; justify-content: center; padding: 30px; backdrop-filter: blur(2px); }
+        .modal-card { background: white; border-radius: 25px; width: 100%; max-width: 300px; padding: 25px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .modal-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 15px; }
+        
+        .survey-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .survey-btn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #EEE; background: #F8F9FA; font-weight: 700; color: var(--tech-purple); cursor: pointer; font-size: 0.85rem; transition: 0.3s; }
+        .survey-btn.selected { background: var(--neon-mint) !important; color: var(--tech-purple) !important; border-color: var(--neon-mint); box-shadow: 0 4px 12px rgba(0, 210, 132, 0.3); }
+        
+        .rating-stars { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .rating-stars .material-icons { font-size: 1.8rem; color: #DDD; cursor: pointer; }
+        .rating-stars .material-icons.active { color: #FFB800; }
+
+        .btn-primary { background: var(--tech-purple); color: var(--neon-mint); border: none; width: 100%; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 0.85rem; cursor: pointer; margin-bottom: 8px; }
+        .btn-ghost { background: transparent; color: #999; border: none; width: 100%; padding: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="introOverlay">
+        <div class="hand-anim"><div class="material-icons">touch_app</div></div>
+    </div>
+
+    <header>
+        <img src="https://i.pravatar.cc/150?u=pharm" class="dr-avatar-header">
+        <div class="dr-info">
+            <span class="dr-name">Dr. Ricardo Almeida</span>
+            <span class="dr-crf">CRF-CE: 12944</span>
+        </div>
+        <div class="btn-close-chat" onclick="askToExit()">
+            <span class="material-icons">close</span>
+        </div>
+    </header>
+
+    <main id="chatBody">
+        <div class="msg-dr">
+            <img src="https://i.pravatar.cc/150?u=pharm" class="dr-thumb">
+            <div class="bubble-dr">
+                Olá! Sou o Dr. Ricardo. Como posso te ajudar hoje?
+                <span class="timestamp" style="font-size:0.5rem; opacity:0.5; display:block; text-align:right; margin-top:4px;">Agora</span>
+            </div>
+        </div>
+    </main>
+
+    <div class="chat-input-area">
+        <div class="input-box"><input type="text" id="messageInput" placeholder="Sua mensagem..."></div>
+        <div class="btn-send" onclick="sendMessage()"><span class="material-icons">send</span></div>
+    </div>
+
+    <div id="confirmExitModal" class="modal-overlay">
+        <div class="modal-card">
+            <span class="material-icons" style="font-size: 3rem; color: #FF4757; margin-bottom: 10px;">help_outline</span>
+            <h3>Encerrar Chat?</h3>
+            <p style="font-size:0.85rem; color:#666; margin-bottom:20px;">Tem certeza que deseja finalizar seu atendimento agora?</p>
+            <button class="btn-primary" onclick="goToSurvey()">SIM, ENCERRAR</button>
+            <button class="btn-ghost" onclick="closeExitModal()">NÃO, CONTINUAR</button>
+        </div>
+    </div>
+
+    <div id="surveyModal" class="modal-overlay">
+        <div class="modal-card" id="surveyContent">
+            <h3>Atendimento</h3>
+            <p style="font-size:0.8rem; color:#666; margin-bottom:15px;">Sua solicitação foi atendida?</p>
+            <div class="survey-options">
+                <button class="survey-btn" id="btnSim" onclick="selectSolicitacao(true)">Sim, fui atendido</button>
+                <button class="survey-btn" id="btnNao" onclick="selectSolicitacao(false)">Não fui atendido</button>
+            </div>
+            <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Avalie o farmacêutico:</p>
+            <div class="rating-stars" id="starsArea">
+                <span class="material-icons" onclick="rate(1)">star</span>
+                <span class="material-icons" onclick="rate(2)">star</span>
+                <span class="material-icons" onclick="rate(3)">star</span>
+                <span class="material-icons" onclick="rate(4)">star</span>
+                <span class="material-icons" onclick="rate(5)">star</span>
+            </div>
+            <button class="btn-primary" onclick="finishSurvey()">CONCLUIR</button>
+        </div>
+    </div>
+
+    <script>
+        window.onload = () => {
+            const overlay = document.getElementById('introOverlay');
+            setTimeout(() => {
+                overlay.style.transition = '0.4s';
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.style.display = 'none', 400);
+            }, 5000);
+        };
+
+        const chatBody = document.getElementById('chatBody');
+        const input = document.getElementById('messageInput');
+        let solicitacaoStatus = null;
+        let userRating = 0;
+
+        function sendMessage() {
+            const text = input.value.trim();
+            if (text === "") return;
+            chatBody.insertAdjacentHTML('beforeend', `<div class="msg-me"><div class="bubble-me">${text}</div></div>`);
+            input.value = "";
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        /* FLUXO DE SAÍDA */
+        function askToExit() { document.getElementById('confirmExitModal').style.display = 'flex'; }
+        function closeExitModal() { document.getElementById('confirmExitModal').style.display = 'none'; }
+        
+        function goToSurvey() {
+            closeExitModal();
+            document.getElementById('surveyModal').style.display = 'flex';
+        }
+
+        function selectSolicitacao(status) {
+            solicitacaoStatus = status;
+            document.getElementById('btnSim').classList.toggle('selected', status);
+            document.getElementById('btnNao').classList.toggle('selected', !status);
+        }
+
+        function rate(stars) {
+            userRating = stars;
+            const starsIcons = document.querySelectorAll('#starsArea .material-icons');
+            starsIcons.forEach((s, i) => s.classList.toggle('active', i < stars));
+        }
+
+        function finishSurvey() {
+            if (solicitacaoStatus === null || userRating === 0) {
+                alert("Por favor, preencha a pesquisa."); return;
+            }
+            const card = document.getElementById('surveyContent');
+            card.innerHTML = `
+                <span class="material-icons" style="font-size: 3.5rem; color: var(--neon-mint);">check_circle</span>
+                <h3 style="margin-top:15px">Obrigado!</h3>
+                <p style="font-size:0.85rem; color:#666">Atendimento encerrado com sucesso.</p>
+            `;
+            setTimeout(() => { window.location.href = 'loja_mobile.html'; }, 2000);
+        }
+    </script>
+</body>
+</html>
