@@ -300,33 +300,36 @@
 
         function handleFinalAction() {
             if(!selectedMainMethod) return alert("Selecione uma forma de pagamento!");
-            if(selectedMainMethod === 'card') {
+            
+            // SE FOR PIX, ABRE A TELA DO QR CODE
+            if(selectedMainMethod === 'pix') {
+                document.getElementById('screenPix').style.display = 'flex';
+            } else {
+                // SE FOR CARTÃO, VERIFICA E VAI DIRETO PARA A ANIMAÇÃO
                 const cards = JSON.parse(localStorage.getItem('user_cards_farma')) || [];
                 if(cards.length === 0) return alert("Cadastre um cartão para continuar.");
+                startProcessing();
             }
-            startProcessing();
         }
 
         function startProcessing() {
+            // Fecha a tela do Pix se ela estiver aberta
             document.getElementById('screenPix').style.display = 'none';
-            const intro = document.getElementById('introOverlay');
             
-            // 1. Inicia a animação da mãozinha (dura 5 segundos para simular os cliques)
+            const intro = document.getElementById('introOverlay');
             intro.style.display = 'flex';
             intro.style.opacity = '1';
             
             setTimeout(() => {
-                // 2. Esconde a mãozinha com transição
                 intro.style.transition = '0.4s';
                 intro.style.opacity = '0';
                 
                 setTimeout(() => {
                     intro.style.display = 'none';
-                    // 3. Finaliza diretamente na tela de QR Code de Retirada
                     document.getElementById('screenFinal').style.display = 'flex';
                     localStorage.removeItem('cart_mobile');
                 }, 400);
-            }, 5000); // 5 segundos para a animação da mão (4 ciclos de fingerTap)
+            }, 5000); 
         }
 
         function closeModals() {
