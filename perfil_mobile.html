@@ -21,10 +21,10 @@
         
         body { background-color: var(--page-bg); color: var(--tech-purple); padding-bottom: 90px; overflow-y: auto; }
 
-        /* === HEADER DESIGN === */
+        /* === HEADER DESIGN (Ajustado para não cortar foto) === */
         .header-background {
             background: var(--tech-purple);
-            height: 200px;
+            height: 220px; /* Aumentado */
             width: 100%;
             position: absolute;
             top: 0;
@@ -34,7 +34,7 @@
         .profile-container {
             position: relative;
             z-index: 2;
-            padding: 85px 20px 20px; /* Margem superior para não cortar a foto */
+            padding: 110px 20px 20px; /* Padding superior aumentado */
         }
 
         .user-main-card {
@@ -74,8 +74,10 @@
         .menu-row {
             display: flex; align-items: center; padding: 16px 20px;
             border-bottom: 1px solid #F4F7FA; cursor: pointer;
+            transition: background 0.2s;
         }
         .menu-row:last-child { border-bottom: none; }
+        .menu-row:active { background: #F8F9FA; }
 
         .icon-container {
             width: 36px; height: 36px; border-radius: 10px;
@@ -109,25 +111,13 @@
         input:checked + .slider { background-color: var(--neon-mint); }
         input:checked + .slider:before { transform: translateX(18px); }
 
-        /* === BOTÃO SAIR MELHORADO === */
-        .logout-container { padding: 0 5px; margin-top: 10px; }
-        .btn-exit-premium {
-            background: #FFF;
-            border: 2px solid #FFEBEB;
-            border-radius: 20px;
-            padding: 18px;
-            display: flex; align-items: center; justify-content: center;
-            gap: 12px; color: var(--danger-red);
-            font-weight: 800; cursor: pointer;
-            transition: 0.3s;
-        }
-        .btn-exit-premium:active { background: #FFF5F5; transform: scale(0.98); }
+        .danger { color: #ff4757 !important; }
 
         /* === FOOTER (PADRONIZADO COM A LOJA) === */
         .mobile-footer { 
             position: fixed; bottom: 0; left: 0; width: 100%; 
             background-color: var(--tech-purple); 
-            height: 60px; /* Igual ao seu código da loja */
+            height: 60px; 
             display: flex; justify-content: space-around; 
             align-items: center; z-index: 1000; border-top: 2px solid var(--neon-mint); 
         }
@@ -184,6 +174,14 @@
                         <span class="menu-sub-label">E-mail</span>
                     </div>
                 </div>
+                <div class="menu-row" onclick="window.location.href='meus_cartoes_mobile.html'">
+                    <div class="icon-container bg-purple"><span class="material-icons">credit_card</span></div>
+                    <div class="menu-label-box">
+                        <span class="menu-main-label">Meus Cartões</span>
+                        <span class="menu-sub-label">Gerencie suas formas de pagamento</span>
+                    </div>
+                    <span class="material-icons" style="color:#DDD">chevron_right</span>
+                </div>
             </div>
         </div>
 
@@ -209,7 +207,7 @@
         <div class="menu-section">
             <p class="section-header">Rede 1234Farma</p>
             <div class="card-group">
-                <div class="menu-row" onclick="alert('Buscando unidades Smart próximas...')">
+                <div class="menu-row" onclick="alert('Buscando unidades no mapa...')">
                     <div class="icon-container bg-green"><span class="material-icons">place</span></div>
                     <div class="menu-label-box">
                         <span class="menu-main-label">Localização 1234Farma Smart</span>
@@ -236,10 +234,12 @@
             </div>
         </div>
 
-        <div class="logout-container" id="sectionSair" style="display:none;">
-            <div class="btn-exit-premium" onclick="fazerLogout()">
-                <span class="material-icons">logout</span>
-                SAIR DA CONTA
+        <div class="menu-section" id="sectionSair" style="display:none;">
+            <div class="card-group">
+                <div class="menu-row" onclick="fazerLogout()">
+                    <div class="icon-container"><span class="material-icons danger">logout</span></div>
+                    <div class="menu-label-box"><span class="menu-main-label danger">Sair da Conta</span></div>
+                </div>
             </div>
         </div>
 
@@ -320,4 +320,4 @@
         window.onload = checkProfileStatus;
     </script>
 </body>
-</html>
+</html> 

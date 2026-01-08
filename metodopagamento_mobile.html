@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pagamento - 1234Farma</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root { 
+            --tech-purple: #2E1A47;
+            --neon-mint: #00D284;
+            --page-bg: #F8F9FA;       
+            --card-white: #FFFFFF;
+            --text-gray: #7A7A7A;
+            --warning-red: #ff4757; 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; scrollbar-width: none; }
+        *::-webkit-scrollbar { display: none; }
+        body { background-color: var(--page-bg); color: var(--tech-purple); padding-bottom: 100px; overflow-x: hidden; }
+
+        /* HEADER */
+        header { 
+            background: white; padding: 45px 15px 15px; 
+            display: flex; align-items: center; 
+            border-bottom: 1px solid #EEE; position: sticky; top: 0; z-index: 100;
+        }
+        .btn-back { cursor: pointer; color: var(--tech-purple); }
+        header h1 { font-size: 1.1rem; font-weight: 800; flex-grow: 1; text-align: center; margin-right: 30px; }
+
+        .container { padding: 20px; }
+
+        /* === ANIMAÇÃO DE ENTRADA (MÃOZINHA DO CHAT) === */
+        #introOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 5000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .hand-anim .material-icons { 
+            font-size: 60px; color: var(--tech-purple); opacity: 0.3;
+            animation: fingerTap 1.25s ease-in-out infinite; 
+        }
+        @keyframes fingerTap {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(0.85); opacity: 0.7; color: var(--neon-mint); }
+        }
+
+        /* RESUMO DE COMPRA */
+        .summary-box {
+            background: var(--tech-purple); border-radius: 20px;
+            padding: 20px; color: white; margin-bottom: 25px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .summary-box .label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.7; }
+        .summary-box .value { font-size: 1.4rem; font-weight: 900; color: var(--neon-mint); display: block; }
+        .summary-box .machine { font-size: 0.75rem; opacity: 0.9; display: flex; align-items: center; gap: 4px; margin-top: 5px; }
+
+        .payment-title { font-size: 0.85rem; font-weight: 800; margin-bottom: 15px; color: #888; text-transform: uppercase; }
+        
+        /* OPÇÕES DE PAGAMENTO */
+        .payment-option {
+            background: white; border-radius: 18px; padding: 18px;
+            display: flex; align-items: center; gap: 15px;
+            margin-bottom: 12px; border: 2px solid transparent;
+            cursor: pointer; transition: 0.3s;
+        }
+        .payment-option.selected { border-color: var(--neon-mint); background: #F0FFF9; }
+
+        .payment-icon { 
+            width: 40px; height: 40px; border-radius: 10px; 
+            display: flex; align-items: center; justify-content: center;
+            background: #F4F7FA; color: var(--tech-purple);
+        }
+        .payment-info { flex-grow: 1; }
+        .payment-info b { display: block; font-size: 0.95rem; }
+        .payment-info span { font-size: 0.75rem; color: #888; }
+
+        /* AREA DE SELEÇÃO DE CARTÃO */
+        .card-selection-area {
+            margin-top: 5px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px 0 20px 15px;
+            border-left: 2px solid #EEE;
+        }
+
+        .mini-card-item {
+            background: white; border: 1px solid #EEE; padding: 12px;
+            border-radius: 12px; display: flex; align-items: center; gap: 10px;
+            cursor: pointer;
+        }
+        .mini-card-item.active { border-color: var(--neon-mint); background: #f0fff9; }
+        .mini-card-item .radio { font-size: 1.2rem; color: #DDD; }
+        .mini-card-item.active .radio { color: var(--neon-mint); }
+
+        .btn-add-card-styled {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 12px;
+            background: white;
+            border: 1px solid #DDD;
+            color: var(--tech-purple);
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .footer-action {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: white; padding: 20px; border-top: 1px solid #EEE; z-index: 150;
+        }
+        
+        .btn-confirm-pay {
+            width: 100%; 
+            background: var(--neon-mint); 
+            color: var(--tech-purple);
+            border: none; 
+            padding: 18px; 
+            border-radius: 16px;
+            font-weight: 900; 
+            font-size: 1rem; 
+            cursor: pointer;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(0, 210, 132, 0.3);
+        }
+
+        /* MODAIS E TELAS CHEIAS */
+        .full-modal { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: white; z-index: 2000; display: none; 
+            flex-direction: column; 
+        }
+
+        .pix-container { text-align: center; padding: 60px 25px; flex-grow: 1; }
+        .qr-area { 
+            background: #F9F9F9; padding: 20px; border-radius: 20px; 
+            display: inline-block; margin: 30px 0; border: 1px solid #EEE;
+        }
+        .qr-area img { width: 180px; height: 180px; }
+        .pix-code-box { 
+            background: #EEE; padding: 15px; border-radius: 10px; 
+            font-size: 0.7rem; margin-bottom: 25px; word-break: break-all;
+            font-family: monospace; color: #555;
+        }
+
+        #screenFinal { background: var(--tech-purple); color: white; justify-content: center; align-items: center; padding: 30px; text-align: center; }
+        .qr-card-white { background: white; padding: 30px; border-radius: 30px; margin: 30px 0; }
+        .instruction-badge { background: rgba(255,255,255,0.1); padding: 15px 25px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,0.2); }
+
+    </style>
+</head>
+<body>
+
+    <div id="introOverlay">
+        <div class="hand-anim"><div class="material-icons">touch_app</div></div>
+    </div>
+
+    <header id="mainHeader">
+        <span class="material-icons btn-back" onclick="history.back()">arrow_back</span>
+        <h1>Pagamento</h1>
+    </header>
+
+    <div class="container" id="mainContainer">
+        <div class="summary-box">
+            <div>
+                <span class="label">Valor a pagar</span>
+                <span class="value" id="totalValue">R$ 0,00</span>
+                <span class="machine" id="machineLoc"><span class="material-icons" style="font-size: 14px">location_on</span> Aguardando unidade...</span>
+            </div>
+            <span class="material-icons" style="font-size: 3rem; opacity: 0.2;">payments</span>
+        </div>
+
+        <p class="payment-title">Escolha o método</p>
+
+        <div class="payment-option" id="optPix" onclick="selectMethod('pix')">
+            <div class="payment-icon" style="color: #00BFA5;"><span class="material-icons">pix</span></div>
+            <div class="payment-info">
+                <b>Pix</b>
+                <span>Aprovação em segundos</span>
+            </div>
+            <span class="material-icons radio-main">radio_button_unchecked</span>
+        </div>
+
+        <div class="payment-option" id="optCard" onclick="selectMethod('card')">
+            <div class="payment-icon" style="color: #5C2D91;"><span class="material-icons">credit_card</span></div>
+            <div class="payment-info">
+                <b>Cartão de Crédito</b>
+                <span id="selectedCardLabel">Selecione ou cadastre</span>
+            </div>
+            <span class="material-icons radio-main">radio_button_unchecked</span>
+        </div>
+
+        <div id="cardSelectionArea" class="card-selection-area">
+            <div id="cardsListInside"></div>
+            <div class="btn-add-card-styled" onclick="window.location.href='meus_cartoes_mobile.html'">
+                <span class="material-icons" style="font-size: 16px;">add</span>
+                CADASTRAR NOVO CARTÃO
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-action" id="mainFooter">
+        <button class="btn-confirm-pay" onclick="handleFinalAction()">
+            FINALIZAR PAGAMENTO <span class="material-icons">arrow_forward</span>
+        </button>
+    </div>
+
+    <div id="screenPix" class="full-modal">
+        <div class="pix-container">
+            <span class="material-icons" style="color: var(--neon-mint); font-size: 3.5rem;">pix</span>
+            <h2 style="margin-top:10px">Pagamento Pix</h2>
+            <div class="qr-area">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PAYMENT1234FARMA" alt="QR Pix">
+            </div>
+            <div class="pix-code-box">00020101021226770014br.gov.bcb.pix01361234farma-c0de-4b2e-9d8e-payment</div>
+            <button class="btn-confirm-pay" onclick="startProcessing()">JÁ PAGUEI</button>
+            <button onclick="closeModals()" style="background:none; border:none; color:var(--tech-purple); margin-top:20px; font-weight:800; text-transform:uppercase; font-size:0.75rem;">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="screenFinal" class="full-modal">
+        <span class="material-icons" style="color: var(--neon-mint); font-size: 4rem;">check_circle</span>
+        <h1 style="margin-top:15px">Pagamento Aprovado!</h1>
+        <p>Apresente o QR Code abaixo no leitor da máquina.</p>
+        <div class="qr-card-white">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=LIBERAR-PRODUTO-ID-99821" width="200">
+        </div>
+        <div class="instruction-badge">
+            <span class="material-icons" style="color: var(--neon-mint)">qr_code_scanner</span>
+            POSICIONE NO LEITOR DA MÁQUINA
+        </div>
+        <button onclick="window.location.href='loja_mobile.html'" style="background:none; border:none; color:var(--neon-mint); margin-top:40px; font-weight:800; text-transform:uppercase; text-decoration: underline;">Voltar para o Início</button>
+    </div>
+
+    <script>
+        let selectedMainMethod = '';
+
+        window.onload = () => {
+            const cart = JSON.parse(localStorage.getItem('cart_mobile')) || [];
+            let total = cart.reduce((acc, i) => acc + (i.preco * i.qty), 0);
+            document.getElementById('totalValue').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            const machine = JSON.parse(localStorage.getItem('selected_machine'));
+            if(machine) document.getElementById('machineLoc').innerHTML = `<span class="material-icons" style="font-size: 14px">location_on</span> Máquina ${machine.id} - ${machine.address}`;
+        };
+
+        function selectMethod(method) {
+            selectedMainMethod = method;
+            document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.radio-main').forEach(el => el.innerText = 'radio_button_unchecked');
+            const id = method === 'pix' ? 'optPix' : 'optCard';
+            document.getElementById(id).classList.add('selected');
+            document.getElementById(id).querySelector('.radio-main').innerText = 'check_circle';
+            if(method === 'card') {
+                renderSavedCards();
+                document.getElementById('cardSelectionArea').style.display = 'flex';
+            } else {
+                document.getElementById('cardSelectionArea').style.display = 'none';
+            }
+        }
+
+        function renderSavedCards() {
+            const container = document.getElementById('cardsListInside');
+            const cards = JSON.parse(localStorage.getItem('user_cards_farma')) || [];
+            if(cards.length === 0) {
+                container.innerHTML = '<p style="font-size:0.75rem; color:#999; margin: 10px 0;">Nenhum cartão cadastrado.</p>';
+                return;
+            }
+            container.innerHTML = cards.map((c, index) => `
+                <div class="mini-card-item ${c.isDefault ? 'active' : ''}" onclick="selectThisCard(${index})">
+                    <span class="material-icons radio">${c.isDefault ? 'radio_button_checked' : 'radio_button_unchecked'}</span>
+                    <div style="flex-grow:1">
+                        <b style="font-size:0.85rem">•••• ${c.number.slice(-4)}</b>
+                        <span style="font-size:0.7rem; color:#888; display:block">${c.name}</span>
+                    </div>
+                </div>
+            `).join('');
+            const def = cards.find(c => c.isDefault);
+            if(def) document.getElementById('selectedCardLabel').innerText = `Cartão final ${def.number.slice(-4)}`;
+        }
+
+        function selectThisCard(index) {
+            const cards = JSON.parse(localStorage.getItem('user_cards_farma'));
+            document.getElementById('selectedCardLabel').innerText = `Cartão final ${cards[index].number.slice(-4)}`;
+            const items = document.querySelectorAll('.mini-card-item');
+            items.forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+                item.querySelector('.radio').innerText = i === index ? 'radio_button_checked' : 'radio_button_unchecked';
+            });
+        }
+
+        function handleFinalAction() {
+            if(!selectedMainMethod) return alert("Selecione uma forma de pagamento!");
+            if(selectedMainMethod === 'card') {
+                const cards = JSON.parse(localStorage.getItem('user_cards_farma')) || [];
+                if(cards.length === 0) return alert("Cadastre um cartão para continuar.");
+            }
+            startProcessing();
+        }
+
+        function startProcessing() {
+            document.getElementById('screenPix').style.display = 'none';
+            const intro = document.getElementById('introOverlay');
+            
+            // 1. Inicia a animação da mãozinha (dura 5 segundos para simular os cliques)
+            intro.style.display = 'flex';
+            intro.style.opacity = '1';
+            
+            setTimeout(() => {
+                // 2. Esconde a mãozinha com transição
+                intro.style.transition = '0.4s';
+                intro.style.opacity = '0';
+                
+                setTimeout(() => {
+                    intro.style.display = 'none';
+                    // 3. Finaliza diretamente na tela de QR Code de Retirada
+                    document.getElementById('screenFinal').style.display = 'flex';
+                    localStorage.removeItem('cart_mobile');
+                }, 400);
+            }, 5000); // 5 segundos para a animação da mão (4 ciclos de fingerTap)
+        }
+
+        function closeModals() {
+            document.getElementById('screenPix').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
