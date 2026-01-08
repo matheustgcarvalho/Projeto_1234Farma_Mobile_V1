@@ -13,11 +13,20 @@
         .brand-logo-small { font-size: 1.8rem; font-weight: 900; }
         .brand-logo-small .mint { color: #00D284; }
         .form-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
-        .input-group { margin-bottom: 18px; }
+        .input-group { margin-bottom: 18px; position: relative; }
         .input-group label { display: block; font-size: 0.65rem; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; }
         .input-group input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid #E0E0E0; background: #F8F9FA; font-size: 0.85rem; outline: none; }
         
-        /* COR DO BOTÃO ALTERADA: Verde com letras Roxas */
+        /* Estilo para o ícone de mostrar senha */
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 32px; /* Ajustado para alinhar com o input considerando o label */
+            cursor: pointer;
+            color: #888;
+            user-select: none;
+        }
+
         .btn-submit { 
             width: 100%; 
             padding: 14px; 
@@ -51,6 +60,7 @@
     <div class="input-group">
         <label>Sua Senha</label>
         <input type="password" id="senhaInput" placeholder="Digite sua senha">
+        <span class="material-icons toggle-password" onclick="toggleVisibility()">visibility_off</span>
     </div>
 
     <button class="btn-submit" onclick="validarLogin()">CONTINUAR</button>
@@ -61,6 +71,22 @@
     </div>
 
     <script>
+        // Função para alternar visibilidade da senha
+        function toggleVisibility() {
+            const senhaInput = document.getElementById('senhaInput');
+            const icon = document.querySelector('.toggle-password');
+            
+            if (senhaInput.type === 'password') {
+                senhaInput.type = 'text';
+                icon.textContent = 'visibility';
+                icon.style.color = '#00D284'; // Cor verde quando visível
+            } else {
+                senhaInput.type = 'password';
+                icon.textContent = 'visibility_off';
+                icon.style.color = '#888';
+            }
+        }
+
         function validarLogin() {
             const cpfDigitado = document.getElementById('cpfInput').value;
             const senhaDigitada = document.getElementById('senhaInput').value;
@@ -69,14 +95,11 @@
             const senhaCorreta = "teste1234";
 
             if (cpfDigitado === cpfCorreto && senhaDigitada === senhaCorreta) {
-                // Define a sessão do usuário
                 sessionStorage.setItem('usuarioFarmaFacil', 'Matheus Cliente');
                 
-                // Se estiver dentro de um modal (como na loja), recarrega a página principal para aplicar o estado logado
                 if (window.parent && typeof window.parent.closeLoginModal === 'function') {
                     window.parent.location.reload();
                 } else {
-                    // Caso contrário, redireciona normalmente
                     window.location.href = 'loja_mobile.html';
                 }
             } else {
@@ -84,7 +107,6 @@
             }
         }
 
-        // Máscara automática para facilitar o teste do CPF
         document.getElementById('cpfInput').addEventListener('input', function (e) {
             let v = e.target.value.replace(/\D/g, '');
             if (v.length > 11) v = v.slice(0, 11);

@@ -20,7 +20,7 @@
 
         body { 
             margin: 0; 
-            padding: 20px; 
+            padding: 0 20px 20px 20px; 
             font-family: 'Segoe UI', Roboto, sans-serif; 
             color: var(--tech-purple);
             background-color: var(--page-bg);
@@ -35,14 +35,17 @@
             transition: transform 0.3s ease;
         }
 
-        /* HEADER PADRÃO 1234FARMA */
+        /* HEADER FIXO 1234FARMA */
         .brand-header {
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            margin-top: 40px;
-            margin-bottom: 30px;
+            position: sticky; /* Torna a barra fixa no topo */
+            top: 0;
+            background-color: var(--page-bg);
+            padding: 40px 0 20px 0;
+            margin-bottom: 10px;
+            z-index: 1000;
         }
 
         .btn-back {
@@ -77,7 +80,7 @@
 
         .input-container input {
             width: 100%;
-            padding: 12px 14px;
+            padding: 12px 45px 12px 14px; 
             border-radius: 12px;
             border: 1px solid #E0E0E0;
             background: var(--input-bg);
@@ -92,9 +95,16 @@
             background: #FFF;
         }
 
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            cursor: pointer;
+            color: #888;
+            user-select: none;
+        }
+
         .terms-text { font-size: 0.7rem; color: #888; margin: 15px 0; line-height: 1.4; text-align: center; }
 
-        /* BOTÃO VERDE COM LETRAS ROXAS */
         .btn-register {
             width: 100%; padding: 14px; font-size: 1rem; font-weight: 800; 
             border-radius: 12px; border: none; 
@@ -105,7 +115,6 @@
             text-transform: uppercase;
         }
 
-        /* RODAPÉ PADRÃO */
         .footer-links {
             margin-top: 30px;
             text-align: center;
@@ -167,6 +176,15 @@
                 <label class="label">Crie uma Senha</label>
                 <div class="input-container">
                     <input type="password" id="inputPass" placeholder="Mínimo 6 caracteres">
+                    <span class="material-icons toggle-password" onclick="togglePass('inputPass', this)">visibility_off</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="label">Confirme sua Senha</label>
+                <div class="input-container">
+                    <input type="password" id="inputConfirmPass" placeholder="Digite a senha novamente">
+                    <span class="material-icons toggle-password" onclick="togglePass('inputConfirmPass', this)">visibility_off</span>
                 </div>
             </div>
 
@@ -199,6 +217,19 @@
     </div>
 
     <script>
+        function togglePass(id, icon) {
+            const input = document.getElementById(id);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.textContent = "visibility";
+                icon.style.color = "var(--neon-mint)";
+            } else {
+                input.type = "password";
+                icon.textContent = "visibility_off";
+                icon.style.color = "#888";
+            }
+        }
+
         function maskCPF(i) {
             let v = i.value.replace(/\D/g, "");
             if (v.length > 11) v = v.slice(0, 11);
@@ -213,9 +244,15 @@
             const cpf = document.getElementById('inputCPF').value;
             const email = document.getElementById('inputEmail').value;
             const pass = document.getElementById('inputPass').value;
+            const confirmPass = document.getElementById('inputConfirmPass').value;
 
             if(nome.length < 3 || cpf.length < 14 || !email.includes('@') || pass.length < 6) {
                 alert("Por favor, preencha todos os campos corretamente.");
+                return;
+            }
+
+            if(pass !== confirmPass) {
+                alert("As senhas não coincidem. Verifique e tente novamente.");
                 return;
             }
             
