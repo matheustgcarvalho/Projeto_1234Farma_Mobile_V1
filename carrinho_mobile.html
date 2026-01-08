@@ -44,24 +44,21 @@
         main { flex-grow: 1; padding-bottom: 180px; overflow-y: auto; display: flex; flex-direction: column; }
 
         .section-divider {
-            width: 100%;
-            height: 8px;
+            width: 100%; height: 8px;
             background-color: #f0f0f0;
             border-top: 1px solid #e0e0e0;
             border-bottom: 1px solid #e0e0e0;
-            margin: 10px 0 25px 0;
-            flex-shrink: 0;
+            margin: 10px 0 25px 0; flex-shrink: 0;
         }
 
         .h-scroll-section { margin-bottom: 25px; padding: 0 15px; }
         .h-scroll-container { display: flex; gap: 12px; overflow-x: auto; padding: 5px 0; cursor: grab; user-select: none; }
-        .h-scroll-container:active { cursor: grabbing; }
 
-        .h-card { flex-shrink: 0; width: 135px; background: var(--white-pure); border-radius: 15px; padding: 12px; border: 1px solid #eee; text-align: center; box-shadow: var(--card-shadow); pointer-events: auto; }
-        .h-img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px; mix-blend-mode: multiply; pointer-events: none; }
-        .h-name { font-size: 0.75rem; font-weight: 700; height: 32px; overflow: hidden; margin-bottom: 4px; line-height: 1.2; pointer-events: none; }
-        .price-old { font-size: 0.65rem; color: #999; text-decoration: line-through; pointer-events: none; }
-        .price-new { font-size: 0.9rem; font-weight: 800; color: var(--neon-mint); pointer-events: none; }
+        .h-card { flex-shrink: 0; width: 135px; background: var(--white-pure); border-radius: 15px; padding: 12px; border: 1px solid #eee; text-align: center; box-shadow: var(--card-shadow); }
+        .h-img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px; mix-blend-mode: multiply; }
+        .h-name { font-size: 0.75rem; font-weight: 700; height: 32px; overflow: hidden; margin-bottom: 4px; line-height: 1.2; }
+        .price-old { font-size: 0.65rem; color: #999; text-decoration: line-through; }
+        .price-new { font-size: 0.9rem; font-weight: 800; color: var(--neon-mint); }
         .btn-h-add { width: 100%; border: none; background: var(--tech-purple); color: white; border-radius: 8px; padding: 6px; font-size: 0.7rem; margin-top: 8px; font-weight: 700; cursor: pointer;}
 
         .cart-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 15px; }
@@ -112,13 +109,47 @@
         .footer-summary { padding: 10px 15px 20px 15px; }
         .cart-total-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .total-value { color: var(--tech-purple); font-size: 1.5rem; font-weight: 900; }
-        .btn-finish-order { width: 100%; background-color: var(--neon-mint); color: var(--tech-purple); padding: 14px; border-radius: 12px; font-weight: 900; border: none; font-size: 1rem; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(0, 210, 132, 0.2); }
+        .btn-finish-order { width: 100%; background-color: var(--neon-mint); color: var(--tech-purple); padding: 14px; border-radius: 12px; font-weight: 900; border: none; font-size: 1rem; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(0, 210, 132, 0.2); cursor: pointer; }
 
         .empty-cart-state { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; }
         .btn-go-store { background: var(--tech-purple); color: var(--neon-mint); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; margin-top: 15px; cursor: pointer; font-size: 0.8rem; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(46, 26, 71, 0.6); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
         .modal-content { background-color: var(--white-pure); border-radius: 20px; padding: 25px; width: 85%; text-align: center; border: 2px solid var(--tech-purple); }
+
+        /* === MODAL LOGIN (ANIMADO BOTTOM SHEET) === */
+        .login-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 3000;
+            display: none; align-items: flex-end;
+            backdrop-filter: blur(2px);
+        }
+        .login-modal-overlay.active { display: flex; }
+        .login-modal-content {
+            width: 100%; background: white;
+            border-top-left-radius: 30px; border-top-right-radius: 30px;
+            padding: 20px 25px 40px 25px;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            max-height: 90vh; overflow-y: auto;
+        }
+        .login-modal-overlay.active .login-modal-content { transform: translateY(0); }
+        .modal-drag-handle { width: 40px; height: 5px; background: #E0E0E0; border-radius: 10px; margin: 0 auto 20px auto; }
+
+        /* ALERTA INICIAL */
+        .alert-card {
+            background: white; border-radius: 25px; width: 85%;
+            padding: 30px 20px; text-align: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            animation: alertShow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes alertShow { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .alert-icon { font-size: 3.5rem; color: var(--tech-purple); margin-bottom: 15px; }
+        .alert-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; color: var(--tech-purple); }
+        .alert-text { font-size: 0.9rem; color: #666; line-height: 1.5; margin-bottom: 25px; }
+        .alert-buttons { display: flex; flex-direction: column; gap: 10px; }
+        .btn-alert-login { background: var(--tech-purple); color: var(--neon-mint); border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 0.85rem; cursor: pointer; text-transform: uppercase; }
+        .btn-alert-cancel { background: transparent; color: #999; border: none; padding: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -215,6 +246,25 @@
         </div>
     </div>
 
+    <div id="loginAlertModal" class="modal-overlay">
+        <div class="alert-card">
+            <span class="material-icons alert-icon">lock</span>
+            <div class="alert-title">Acesse sua conta</div>
+            <div class="alert-text">Para garantir seus descontos e finalizar o pagamento, você precisa estar logado na 1234Farma.</div>
+            <div class="alert-buttons">
+                <button class="btn-alert-login" onclick="abrirLoginAnimado()">Fazer Login Agora</button>
+                <button class="btn-alert-cancel" onclick="document.getElementById('loginAlertModal').style.display='none'">Depois</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loginModal" class="login-modal-overlay" onclick="fecharLoginAnimado()">
+        <div class="login-modal-content" onclick="event.stopPropagation()">
+            <div class="modal-drag-handle"></div>
+            <div id="loginContentArea"></div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const CART_KEY = 'cart_mobile';
@@ -225,6 +275,7 @@
                 { id: 101, nome: "Alcool Gel 70% 500ml", precoOld: 15.00, preco: 9.90, img: "img/epocler.png" }
             ];
 
+            // RESTAURADO: LISTA COMPLETA DE FAVORITOS
             const favoritos = [
                 { id: 1, nome: "Dorflex 10 Comprimidos", preco: 15.90, img: "img/dorflex.png" },
                 { id: 2, nome: "Neosaldina 30 Drágeas", preco: 19.50, img: "img/neosaldina.png" },
@@ -234,8 +285,25 @@
                 { id: 5, nome: "Paracetamol 750mg", preco: 8.00, img: "img/paracetamol.png" }
             ];
 
+            // CONTROLE DO MODAL DE LOGIN
+            window.abrirLoginAnimado = function() {
+                document.getElementById('loginAlertModal').style.display = 'none';
+                fetch('login_mobile.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('loginContentArea').innerHTML = data;
+                        document.getElementById('loginModal').classList.add('active');
+                    });
+            }
+
+            window.fecharLoginAnimado = function() {
+                document.getElementById('loginModal').classList.remove('active');
+                setTimeout(() => { document.getElementById('loginModal').style.display = 'none'; }, 400);
+            }
+
             function renderHScroll(containerId, list, hasPromo) {
                 const container = document.getElementById(containerId);
+                if(!container) return;
                 container.innerHTML = list.map(p => `
                     <div class="h-card">
                         <img src="${p.img}" class="h-img" onerror="this.src='https://placehold.co/50'">
@@ -245,35 +313,6 @@
                         <button class="btn-h-add" onclick="addItemDirect(${p.id}, '${containerId}')">Adicionar</button>
                     </div>
                 `).join('');
-                
-                enableDrag(containerId);
-            }
-
-            function enableDrag(containerId) {
-                const slider = document.getElementById(containerId);
-                let isDown = false;
-                let startX;
-                let scrollLeft;
-
-                slider.addEventListener('mousedown', (e) => {
-                    isDown = true;
-                    slider.classList.add('active');
-                    startX = e.pageX - slider.offsetLeft;
-                    scrollLeft = slider.scrollLeft;
-                });
-                slider.addEventListener('mouseleave', () => {
-                    isDown = false;
-                });
-                slider.addEventListener('mouseup', () => {
-                    isDown = false;
-                });
-                slider.addEventListener('mousemove', (e) => {
-                    if (!isDown) return;
-                    e.preventDefault();
-                    const x = e.pageX - slider.offsetLeft;
-                    const walk = (x - startX) * 2; 
-                    slider.scrollLeft = scrollLeft - walk;
-                });
             }
 
             window.addItemDirect = function(id, source) {
@@ -351,9 +390,7 @@
             document.getElementById('btnFinalizar').onclick = () => {
                 const user = sessionStorage.getItem('usuarioFarmaFacil');
                 if (!user) {
-                    alert("Por favor, faça login para finalizar o pedido.");
-                    // Redireciona para a ponte de login
-                    window.location.href = 'login_mobile.html';
+                    document.getElementById('loginAlertModal').style.display = 'flex';
                 } else {
                     window.location.href = 'metodopagamento_mobile.html';
                 }
